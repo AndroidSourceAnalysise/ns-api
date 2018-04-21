@@ -1,2 +1,2 @@
 # ns-api
-aip服务
+api服务
