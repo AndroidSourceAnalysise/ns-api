@@ -13,3 +13,8 @@ encodingAesKey = rs9sQmmfbXXbkRczU2dBKzUllcYP2fo2bgv3P9bwvTh
 
 ossAccessKeyId=AKID1vjR9gACBFCxUtKB6tWyDH9uUL2dxMVU
 ossAccessKeySecret=whJm38e8rQWTH0ZyBC1skRwGPRIxRioz
+
+partner=1503864151
+paternerKey=b3af559689804e35a61b107de5e4ea9f
+wx_notify_url=http://m.nashengbuy.com/ns-api/api/weixin/pay/pay_notify"
+certPath=/usr/cert/apiclient_cert.p12

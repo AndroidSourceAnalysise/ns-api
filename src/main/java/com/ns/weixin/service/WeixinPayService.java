@@ -36,9 +36,10 @@ public class WeixinPayService {
 
     //商户相关资料
     private static String appid = PropKit.get("appId");
-    private static String partner = "1497125292";
-    private static String paternerKey = "F5CE0C20867EAFE9A12C0FF37998962F";
-    private static String notify_url = "http://xhd777.com.cn/ns-api/api/weixin/pay/pay_notify";
+    private static String partner = PropKit.get("partner");
+    private static String paternerKey = PropKit.get("paternerKey");
+    private static String notify_url = PropKit.get("notify_url");
+    private static String cert_path = PropKit.get("certPath");
 
     /**
      * 公众号支付js-sdk
@@ -115,7 +116,7 @@ public class WeixinPayService {
         params.put("out_refund_no", orderId);
         params.put("total_fee", totalFee);
         params.put("refund_fee", refundFee);
-        Map<String, String> result = PaymentApi.refund(params, paternerKey, "/usr/cert/apiclient_cert.p12");
+        Map<String, String> result = PaymentApi.refund(params, paternerKey, cert_path);
         if ("SUCCESS".equals(result.get("return_code"))) {
             if (!"SUCCESS".equals(result.get("result_code"))) {
                 throw new CustException(result.get("err_code_des"));
