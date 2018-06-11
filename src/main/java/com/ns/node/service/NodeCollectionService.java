@@ -9,14 +9,12 @@
 package com.ns.node.service;
 
 import com.ns.common.exception.CustException;
-import com.ns.common.model.NodeCmt;
 import com.ns.common.model.NodeCollection;
 import com.ns.common.utils.DateUtil;
 import com.ns.common.utils.GUIDUtil;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
-import sun.misc.Cache;
 
 import java.util.List;
 

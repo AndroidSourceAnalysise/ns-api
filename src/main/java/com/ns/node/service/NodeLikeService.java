@@ -15,7 +15,6 @@ import com.ns.common.utils.GUIDUtil;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
-import java.util.List;
 
 /**
  * description: //TODO <br>
