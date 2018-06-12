@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ns.common.exception.CustException;
 import com.jfinal.core.Controller;
 import com.jfinal.log.Log;
+import com.ns.common.utils.Util;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
