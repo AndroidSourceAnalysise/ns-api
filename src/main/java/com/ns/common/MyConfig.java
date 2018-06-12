@@ -1,5 +1,6 @@
 package com.ns.common;
 
+import com.ns.cart.controller.ShopCartController;
 import com.ns.common.interceptor.GlobalInterceptor;
 import com.ns.common.model._MappingKit;
 import com.ns.common.quartzplugin.QuartzPlugin;
@@ -122,6 +123,8 @@ public class MyConfig extends JFinalConfig {
         me.add("/api/pnt/menu", PntMenuController.class);
         me.add("/api/identifycode", TldIdentifyCodeController.class);
         me.add("/api/api", WeixinApiController.class);
+        me.add("/api/cart", ShopCartController.class);
+
     }
 
     @Override

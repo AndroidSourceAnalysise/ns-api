@@ -23,6 +23,7 @@ public class _MappingKit {
 		arp.addMapping("bas_cust_qrcode", "ID", BasCustQrcode.class);
 		arp.addMapping("bas_cust_relation", "ID", BasCustRelation.class);
 		arp.addMapping("bas_customer", "ID", BasCustomer.class);
+		arp.addMapping("bas_customer_cart", "cart_id", BasCustomerCart.class);
 		arp.addMapping("bas_customer_ext", "ID", BasCustomerExt.class);
 		arp.addMapping("bas_customer_request", "ID", BasCustomerRequest.class);
 		arp.addMapping("node_category", "ID", NodeCategory.class);
