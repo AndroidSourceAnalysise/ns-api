@@ -149,7 +149,7 @@ public class MyConfig extends JFinalConfig {
         // ehcahce插件配置
         me.add(new EhCachePlugin());
 
-        RedisPlugin bbsRedis = new RedisPlugin("ns", "39.107.92.124", 7000, "Kou#8901");
+        RedisPlugin bbsRedis = new RedisPlugin("ns", "45.40.251.65", 7173, "h$n#s231");
         me.add(bbsRedis);
         //定时任务
         QuartzPlugin quartzPlugin = new QuartzPlugin(OrderCloseJob.class, OrderConfirmJob.class);
