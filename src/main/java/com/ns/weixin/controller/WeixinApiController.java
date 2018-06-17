@@ -3,6 +3,7 @@ package com.ns.weixin.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ns.common.model.BasCustomer;
+import com.ns.common.utils.Util;
 import com.ns.customer.service.BasCustomerExtService;
 import com.ns.customer.service.BasCustomerService;
 import com.jfinal.kit.StrKit;
@@ -45,26 +46,8 @@ public class WeixinApiController extends ApiController {
      * 创建菜单
      */
     public void createMenu() {
-        String str = "{\n" +
-                "    \"button\": [\n" +
-                "        {\n" +
-                "            \"name\": \"进入理财\",\n" +
-                "            \"url\": \"http://m.bajie8.com/bajie/enter\",\n" +
-                "            \"type\": \"view\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "            \"name\": \"安全保障\",\n" +
-                "            \"key\": \"112\",\n" +
-                "\t    \"type\": \"click\"\n" +
-                "        },\n" +
-                "        {\n" +
-                "\t    \"name\": \"使用帮助\",\n" +
-                "\t    \"url\": \"http://m.bajie8.com/footer/cjwt\",\n" +
-                "\t    \"type\": \"view\"\n" +
-                "        }\n" +
-                "    ]\n" +
-                "}";
-        ApiResult apiResult = MenuApi.createMenu(str);
+        final String body = Util.getRequestBytes(getRequest());
+        ApiResult apiResult = MenuApi.createMenu(body);
         if (apiResult.isSucceed())
             renderText(apiResult.getJson());
         else
@@ -115,7 +98,7 @@ public class WeixinApiController extends ApiController {
                     continue;
                 }
                 extService.addBasCustomerExt(user.getStr("ID"), user.getStr("CON_NO"), user.getStr("CON_NAME"));
-                System.out.println("会员================================================成功:"+user.getStr("CON_NO"));
+                System.out.println("会员================================================成功:" + user.getStr("CON_NO"));
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("=========================================openId异常=========================================:" + user.getStr("CON_NO"));

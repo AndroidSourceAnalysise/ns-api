@@ -23,7 +23,7 @@ import com.jfinal.weixin.sdk.api.TemplateMsgApi;
  * @since JDK 1.8
  */
 public class NoticeService {
-    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_01 = "bGaVW9KBLB7DDQwHbtvWMvefcmuHwdc0uHlfYuF0rKo";
+    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_01 = "LpDY9HEfXkMMUvs39Z1dGe5_YRWG99vj4cirHvDg74E";
     public static final String TEMP_COLOR = "#173177";
     public static final NoticeService me = new NoticeService();
     static TldSiteMsgService tldSiteMsgService = TldSiteMsgService.me;
@@ -62,7 +62,7 @@ public class NoticeService {
         return temp.build();
     }
 
-    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_05 = "-75Uavn03GRpvIcg36VS5N3WHXI0mqDC5XY_-C9WV1I";
+    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_05 = "YBjUxAxkOVGgbziG-tpHOLnpXowbUYyaD70SKcfKvCU";
 
     /**
      * 订单付款消息模板
@@ -83,7 +83,7 @@ public class NoticeService {
         tldSiteMsgService.addMsg("0", conId, "您好，您的订单已付款成功", 2);
     }
 
-    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_04 = "UwjpZfjSUzQPCAIeM55UMfLPglj-Tn5l_aSKUTx7NSg";
+    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_04 = "8ACjQyFHW8YGxUu1a-rjhubJGTLceJP3SD1QD8hS7kI";
 
     /**
      * 积分模板消息
@@ -124,7 +124,7 @@ public class NoticeService {
         tldSiteMsgService.addMsg("0", conId, msg, 2);
     }
 
-    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_02 = "1VBWzXnSWGQUmsOKLaVxYblBeYAg0DxS0FH8mGmTAqU";
+    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_02 = "CnPUnPIy5fK_ouKDkO-Y6WNUS1YeRf7SfIVIzeGRHdU";
 
     public void sendOrderReceivedNotice(String conId,String openId, String orderNo, String confirmDate, String orderTotal) {
         String first = "您好，您的一个订单已经确认收货了。";
@@ -142,7 +142,7 @@ public class NoticeService {
         tldSiteMsgService.addMsg("0", conId, msg, 2);
     }
 
-    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_03 = "ZMOW3IaWQwbDJ2q90y7xHN9X7QO1cfFF5pZUM3l5qMg";
+    private static final String NEW_CUSTOMER_NOTICE_TEMPLATE_03 = "4FRn9FAmWBipi-jdX4_2U5Psd3TEscKNAwZTGFJH604";
 
     public void getRefundNotice(String conId,String openId, String orderNo) {
         String first = "您好，您的退货申请已通过";
@@ -167,13 +167,13 @@ public class NoticeService {
         String temp = getNewCustomerNotice(customer.getOPENID(), customer.getConName(), customer.getConNo(), customer.getUpdateDt());
         TemplateMsgApi.send(temp);
         /*站内信本人*/
-        String msgTxt = String.format("您于%s成为【弘德苑】的第%s位会员，会员号是【%s】", customer.getUpdateDt(), customer.getConNo(), customer.getConNo());
+        String msgTxt = String.format("您于%s成为【咪之猫】的第%s位会员，会员号是【%s】", customer.getUpdateDt(), customer.getConNo(), customer.getConNo());
         tldSiteMsgService.addMsg("0", customer.getID(), msgTxt, 3);
         //给上级发消息
         if (refCustomer != null) {
             String temp2 = getNewCustomerRefNotice(customer,refCustomer);
             TemplateMsgApi.send(temp2);
-            msgTxt = String.format("新客户【%s】，于%s成为【弘德苑】的第%s位会员，会员号为【%s】", customer.getConName(), customer.getUpdateDt(), customer.getConNo(), customer.getConNo());
+            msgTxt = String.format("新客户【%s】，于%s成为【咪之猫】的第%s位会员，会员号为【%s】", customer.getConName(), customer.getUpdateDt(), customer.getConNo(), customer.getConNo());
             tldSiteMsgService.addMsg("0", refCustomer.getID(), msgTxt, 3);
         }
     }

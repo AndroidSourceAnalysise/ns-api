@@ -18,13 +18,17 @@ import com.jfinal.weixin.sdk.msg.out.OutVoiceMsg;
 
 public class WeixinMsgController extends MsgControllerAdapter {
     static Log logger = Log.getLog(WeixinMsgController.class);
-    private static final String helpStr = "\t你的品位不错哦  么么哒。";
 
     @Override
     protected void processInTextMsg(InTextMsg inTextMsg) {
-        OutTextMsg outMsg = new OutTextMsg(inTextMsg);
-        outMsg.setContent("文本消息~");
-        render(outMsg);
+        String msgContent = inTextMsg.getContent().trim();
+        String fromOpenId = inTextMsg.getFromUserName();
+        String outMsg;
+        if ("568".equals(msgContent))
+            outMsg = "OPEN_ID = " + fromOpenId;
+        else
+            outMsg = "亲爱的会员您好，公众号会话功能未开启，有问题请点击下面链接人工客服咨询: 13755141659 或者添加为您配备的私人顾问(微信号: 13755141659)^_^";
+        renderOutTextMsg(outMsg);
     }
 
     @Override

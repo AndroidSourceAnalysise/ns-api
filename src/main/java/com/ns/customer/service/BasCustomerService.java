@@ -54,15 +54,10 @@ public class BasCustomerService {
      * @param openId
      */
     public void addCustomer(String refNo, String openId) {
-        String str = "hi，你终于找到我了！\n" +
-                "\n" +
-                "教育孩子，如此简单；\n" +
-                "在孩子最美好的年华 ，给予最美好的精神滋养！\n" +
-                " \n" +
-                "0-7岁，经典陪你长大\n" +
-                "\n" +
-                "\n" +
-                "http://mp.weixin.qq.com/s/DgllyrRCI9eyI-ShdSw3cA";
+        String str = "hi，咪之猫终于等到你啦！\n" +
+                "吃货的世界，咪之猫最懂你；\n" +
+                "咪之猫不仅仅能提供最美，最实惠，最有价值的产品，同时能够给予最美好的精神滋养！\n" +
+                "<a href=\"https://mp.weixin.qq.com/s/ZHL7uXRxtpCdEivbdDzgFQ\">我是谁</a>";
         if (StrKit.isBlank(refNo)) {
             refNo = Db.queryStr("select rp_no from bas_cust_relation where open_id = ?", openId);
         }
