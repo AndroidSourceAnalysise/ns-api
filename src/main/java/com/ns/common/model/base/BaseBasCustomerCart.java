@@ -162,4 +162,13 @@ public abstract class BaseBasCustomerCart<M extends BaseBasCustomerCart<M>> exte
 		return getStr("remark");
 	}
 
+	public M setConId(java.lang.String conId) {
+		set("con_id", conId);
+		return (M)this;
+	}
+	
+	public java.lang.String getConId() {
+		return getStr("con_id");
+	}
+
 }

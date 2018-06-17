@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public class ShopCartService {
     private static final BasCustomerCart dao = BasCustomerCart.dao;
-    private static final String LIST_SQL = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected from bas_customer_cart t";
-    private static final String SELECT_ALL_SQL = "update bas_customer_cart set is_selected=?";
+    private static final String LIST_SQL = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected from bas_customer_cart t where t.con_id=?";
+    private static final String SELECT_ALL_SQL = "update bas_customer_cart set is_selected=? where con_id=?";
     private static final String SELECT_SQL = "update bas_customer_cart set is_selected=? where cart_id=?";
-    private static final String QUERY_SQL = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected from bas_customer_cart t where t.product_id=? and t.sku_id=?";
+    private static final String QUERY_SQL = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected from bas_customer_cart t where t.product_id=? and t.sku_id=? and con_id=?";
 
 
     public static boolean add(Map<String, Object> params) {
@@ -32,8 +32,8 @@ public class ShopCartService {
         }
     }
 
-    public static Object list() {
-        return dao.find(LIST_SQL);
+    public static Object list(String conId) {
+        return dao.find(LIST_SQL, conId);
     }
 
     public static boolean delete(String cartId) {
@@ -47,12 +47,12 @@ public class ShopCartService {
         return Db.update("bas_customer_cart", record);
     }
 
-    public static boolean selectAll(int allSelect) {
-        return Db.update(SELECT_ALL_SQL, allSelect) > 0;
+    public static boolean selectAll(int allSelect, String conId) {
+        return Db.update(SELECT_ALL_SQL, allSelect, conId) > 0;
     }
 
-    public static boolean select(int isSelect) {
-        return Db.update(SELECT_SQL, isSelect) > 0;
+    public static boolean select(int isSelect, String conId) {
+        return Db.update(SELECT_SQL, isSelect, conId) > 0;
     }
 
 }
