@@ -21,7 +21,7 @@ public class ShopCartController extends BaseController {
      * 删除商品
      */
     public void delete() {
-        final String cartId = (String) getRequestObject(getRequest(), HashMap.class).get("cartId");
+        final String cartId = (String) getRequestObject(getRequest(), HashMap.class).get("cart_id");
         renderJson(JsonResult.newJsonResult(ShopCartService.delete(cartId)));
     }
 
@@ -29,7 +29,7 @@ public class ShopCartController extends BaseController {
      * 购物车列表
      */
     public void list() {
-        String conId = (String) getRequestObject(getRequest(), HashMap.class).get("conId");
+        String conId = (String) getRequestObject(getRequest(), HashMap.class).get("con_id");
         renderJson(JsonResult.newJsonResult(ShopCartService.list(conId)));
     }
 
@@ -47,8 +47,8 @@ public class ShopCartController extends BaseController {
      */
     public void selectAll() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        final int allSelect = (int) params.get("allSelect");
-        final String conId = (String) params.get("conId");
+        final int allSelect = (int) params.get("all_select");
+        final String conId = (String) params.get("con_id");
         renderJson(JsonResult.newJsonResult(ShopCartService.selectAll(allSelect, conId)));
     }
 
@@ -57,8 +57,8 @@ public class ShopCartController extends BaseController {
      */
     public void select() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        final int isSelect = (int) params.get("isSelect");
-        final String conId = (String) params.get("conId");
+        final int isSelect = (int) params.get("is_select");
+        final String conId = (String) params.get("con_id");
         renderJson(JsonResult.newJsonResult(ShopCartService.select(isSelect, conId)));
     }
 }

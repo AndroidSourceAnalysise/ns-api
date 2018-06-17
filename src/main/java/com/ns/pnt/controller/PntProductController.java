@@ -33,18 +33,18 @@ public class PntProductController extends BaseController {
     static PntProductService pntProductService = PntProductService.me;
 
     public void getProductList() {
-        renderJson(JsonResult.newJsonResult(pntProductService.getProducts(getParaToInt("pageNumber", 1), getParaToInt("pageSize", 100))));
+        renderJson(JsonResult.newJsonResult(pntProductService.getProducts(getParaToInt("page_number", 1), getParaToInt("page_size", 100))));
     }
     public void getProductByName() {
         renderJson(JsonResult.newJsonResult(pntProductService.getProductByName(getPara("name"))));
     }
 
     public void getProductById() {
-        renderJson(JsonResult.newJsonResult(pntProductService.getProductDetial(getPara("pntId"))));
+        renderJson(JsonResult.newJsonResult(pntProductService.getProductDetial(getPara("pnt_id"))));
     }
 
     public void getStock() {
-        renderJson(JsonResult.newJsonResult(pntProductService.getStock(getPara("pntId"), getPara("skuId"))));
+        renderJson(JsonResult.newJsonResult(pntProductService.getStock(getPara("pnt_id"), getPara("sku_id"))));
     }
 
     public void getCategories() {
