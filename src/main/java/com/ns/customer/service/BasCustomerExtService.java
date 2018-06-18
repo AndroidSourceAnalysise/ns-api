@@ -56,6 +56,7 @@ public class BasCustomerExtService {
         ext.setUpdateDt(DateUtil.getNow());
         return ext.save();
     }
+
     /**
      * 根据会员ID查询扩展数据
      *
@@ -70,6 +71,8 @@ public class BasCustomerExtService {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("POINTS_ENABLED", Db.findFirst("SELECT POINTS_TOTAL,POINTS_ENABLED FROM BAS_CUSTOMER_EXT  WHERE ENABLED = 1 AND CON_ID = ? ", conId));
         resultMap.put("POINTTRANS", basCustPointsService.getPointTransList(conId, 1, 5));
+        // 积分抵扣比例 例如100 也就是1积分抵扣1块钱
+        resultMap.put("POINT_CREDIT", SysDictService.me.getByParamKey("points_discount_rate"));
         return resultMap;
     }
 

@@ -26,11 +26,11 @@ public class BasCustomerExtController extends Controller {
     static BasCustPointsService pointsService = BasCustPointsService.me;
 
     public void getByConId() {
-        renderJson(JsonResult.newJsonResult(extService.getByConId(getPara("conId"))));
+        renderJson(JsonResult.newJsonResult(extService.getByConId(getPara("con_id"))));
     }
 
     public void getMyPoints() {
-        renderJson(JsonResult.newJsonResult(extService.getMyPoints(getPara("conId"))));
+        renderJson(JsonResult.newJsonResult(extService.getMyPoints(getPara("con_id"))));
     }
 
     public void pointsRanking() {
@@ -42,30 +42,30 @@ public class BasCustomerExtController extends Controller {
     }
 
     public void getPointTransList() {
-        String conId = getPara("conId");
-        int pageNumber = getParaToInt("pageNumber", 1);
-        int pageSize = getParaToInt("pageSize", 10);
+        String conId = getPara("con_id");
+        int pageNumber = getParaToInt("page_number", 1);
+        int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(pointsService.getPointTransList(conId, pageNumber, pageSize)));
     }
 
     public void myCustomer() {
-        String conId = getPara("conId");
-        int pageNumber = getParaToInt("pageNumber", 1);
-        int pageSize = getParaToInt("pageSize", 10);
+        String conId = getPara("con_id");
+        int pageNumber = getParaToInt("page_number", 1);
+        int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(extService.myCustomer(pageNumber, pageSize, conId)));
     }
 
     public void myBuyCustomer() {
-        String conId = getPara("conId");
-        int pageNumber = getParaToInt("pageNumber", 1);
-        int pageSize = getParaToInt("pageSize", 10);
+        String conId = getPara("con_id");
+        int pageNumber = getParaToInt("page_number", 1);
+        int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(extService.myBuyCustomer(pageNumber, pageSize, conId)));
     }
 
     public void myUnBuyCustomer() {
-        String conId = getPara("conId");
-        int pageNumber = getParaToInt("pageNumber", 1);
-        int pageSize = getParaToInt("pageSize", 10);
+        String conId = getPara("con_id");
+        int pageNumber = getParaToInt("page_number", 1);
+        int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(extService.myUnBuyCustomer(pageNumber, pageSize, conId)));
     }
 }

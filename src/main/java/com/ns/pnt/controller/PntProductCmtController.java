@@ -51,10 +51,10 @@ public class PntProductCmtController extends BaseController {
     }
 
     public void getPntCmtList() {
-        int pageNumber = getParaToInt("pageNumber");
-        int pageSize = getParaToInt("pageSize");
-        String pntId = getPara("pntId");
-        String conId = getPara("conId");
+        int pageNumber = getParaToInt("page_number");
+        int pageSize = getParaToInt("page_size");
+        String pntId = getPara("pnt_id");
+        String conId = getPara("con_id");
         renderJson(JsonResult.newJsonResult(cmtService.getPntCmtList(pageNumber, pageSize, pntId, conId)));
     }
 
