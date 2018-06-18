@@ -57,7 +57,7 @@ public class BasCustomerService {
         String str = "hi，咪之猫终于等到你啦！\n" +
                 "吃货的世界，咪之猫最懂你；\n" +
                 "咪之猫不仅仅能提供最美，最实惠，最有价值的产品，同时能够给予最美好的精神滋养！\n" +
-                "<a href=\"https://mp.weixin.qq.com/s/ZHL7uXRxtpCdEivbdDzgFQ\">我是谁</a>";
+                "<a href=\"http://www.nashengbuy.com\">了解详情，请点击进入>></a>";
         if (StrKit.isBlank(refNo)) {
             refNo = Db.queryStr("select rp_no from bas_cust_relation where open_id = ?", openId);
         }
