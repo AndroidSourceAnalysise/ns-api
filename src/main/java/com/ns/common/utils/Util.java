@@ -6,6 +6,9 @@ import com.jfinal.kit.HttpKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.log.Log;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.beans.BeanInfo;
@@ -495,6 +498,56 @@ public class Util {
         }
 
         return sb.toString().substring(0, sb.toString().length() - 1);
+    }
+
+    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5',
+            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    /**
+     * Takes the raw bytes from the digest and formats them correct.
+     *
+     * @param bytes the raw bytes from the digest.
+     * @return the formatted bytes.
+     */
+    private static String getFormattedText(byte[] bytes) {
+        int len = bytes.length;
+        StringBuilder buf = new StringBuilder(len * 2);
+        // 把密文转换成十六进制的字符串形式
+        for (int j = 0; j < len; j++) {
+            buf.append(HEX_DIGITS[(bytes[j] >> 4) & 0x0f]);
+            buf.append(HEX_DIGITS[bytes[j] & 0x0f]);
+        }
+        return buf.toString();
+    }
+
+    public static String sha1(String str) {
+        if (str == null) {
+            return null;
+        }
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+            messageDigest.update(str.getBytes());
+            return getFormattedText(messageDigest.digest());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static byte[] AES_CBC_Decrypt(byte[] data, byte[] key, byte[] iv) throws Exception{
+        Cipher cipher = getCipher(Cipher.DECRYPT_MODE, key, iv);
+        return cipher.doFinal(data);
+    }
+
+    private static Cipher getCipher(int mode, byte[] key, byte[] iv) throws Exception{
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+
+        //因为AES的加密块大小是128bit(16byte), 所以key是128、192、256bit无关
+        //System.out.println("cipher.getBlockSize()： " + cipher.getBlockSize());
+
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        cipher.init(mode, secretKeySpec, new IvParameterSpec(iv));
+
+        return cipher;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.ns.common;
 
+import com.ns.applet.controller.AppletController;
 import com.ns.cart.controller.ShopCartController;
 import com.ns.common.interceptor.GlobalInterceptor;
 import com.ns.common.model._MappingKit;
@@ -124,6 +125,8 @@ public class MyConfig extends JFinalConfig {
         me.add("/api/identifycode", TldIdentifyCodeController.class);
         me.add("/api/api", WeixinApiController.class);
         me.add("/api/cart", ShopCartController.class);
+        me.add("/api/applet", AppletController.class);
+
 
     }
 

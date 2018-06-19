@@ -41,11 +41,19 @@ public class BasCustomerService {
     public static final BasCustomerService me = new BasCustomerService();
     private static final String COLUMN = "ID,CON_NO,CON_NAME,REAL_NAME,CON_TYPE,PIC,SEX,BIRTHDAY,COUNTRY,PROVINCE,CITY,DISTRICT,ADDRESS,MOBILE,UNION_ID,OPENID," +
             "IS_LOCKOUT,RP_ID,RP_NO,RP_NAME,IS_SUBSCRIBE,ENABLED,VERSION,STATUS,REMARK,CREATE_BY,CREATE_DT,UPDATE_DT ";
+    private static final String BY_UNIONID_SQL = "select t.ID from bas_customer t where UNION_ID=?";
 
     private final BasCustomer dao = new BasCustomer().dao();
     static BasCustomerExtService extService = BasCustomerExtService.me;
     static NoticeService noticeService = NoticeService.me;
     static TldIdentifyCodeService identifyCodeService = TldIdentifyCodeService.me;
+
+    public String isExistCustomerByUnionId(String unionId) {
+        if(StrKit.isBlank(unionId)){
+            return null;
+        }
+        return Db.queryStr(BY_UNIONID_SQL, unionId);
+    }
 
     /**
      * 关注新增会员
@@ -135,6 +143,45 @@ public class BasCustomerService {
         customer.setCreateDt(DateUtil.getNow());
         customer.setUpdateDt(DateUtil.getNow());
         return customer;
+    }
+
+
+    public String appletAddCustomer(String conName, String pic, int sex, String birthDay, String country, String province, String city, String unionId) {
+        BasCustomer customer = new BasCustomer();
+        String conId = GUIDUtil.getGUID();
+        customer.setID(conId);
+        customer.setConNo(String.valueOf(Redis.use().incr(RedisKeyDetail.CON_NO_SEQ)));
+        customer.setConName(conName);
+        customer.setConType(0);
+        customer.setPIC(pic);
+        customer.setSEX(sex);
+        customer.setBIRTHDAY(birthDay);
+        customer.setCOUNTRY(country);
+        customer.setPROVINCE(province);
+        customer.setCITY(city);
+        customer.setUnionId(unionId);
+        customer.setIsSubscribe(0);
+        customer.setCreateDt(DateUtil.getNow());
+        customer.setUpdateDt(DateUtil.getNow());
+        if (!customer.save()) {
+            throw new CustException("添加会员信息失败!");
+        }
+        return conId;
+    }
+
+    public boolean updateAppletCustomer(String conName, String pic, int sex, String birthDay, String country, String province, String city, String conId) {
+        BasCustomer customer = new BasCustomer();
+        customer.setID(conId);
+        customer.setConName(conName);
+        customer.setPIC(pic);
+        customer.setSEX(sex);
+        customer.setBIRTHDAY(birthDay);
+        customer.setCOUNTRY(country);
+        customer.setPROVINCE(province);
+        customer.setCITY(city);
+        customer.setCreateDt(DateUtil.getNow());
+        customer.setUpdateDt(DateUtil.getNow());
+        return customer.update();
     }
 
     public boolean bindMobile(String mobile, String conId, String code) {
