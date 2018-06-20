@@ -39,15 +39,21 @@ public class _MappingKit {
 		arp.addMapping("pnt_sku", "ID", PntSku.class);
 		arp.addMapping("sys_dict", "ID", SysDict.class);
 		arp.addMapping("sys_user", "ID", SysUser.class);
+		arp.addMapping("tld_award", "id", TldAward.class);
+		arp.addMapping("tld_award_contract", "id", TldAwardContract.class);
+		arp.addMapping("tld_award_mid", "id", TldAwardMid.class);
 		arp.addMapping("tld_coupon", "ID", TldCoupon.class);
 		arp.addMapping("tld_coupon_grant", "ID", TldCouponGrant.class);
 		arp.addMapping("tld_identify_code", "ID", TldIdentifyCode.class);
 		arp.addMapping("tld_order_items", "ID", TldOrderItems.class);
 		arp.addMapping("tld_order_split", "ID", TldOrderSplit.class);
 		arp.addMapping("tld_orders", "ID", TldOrders.class);
+		arp.addMapping("tld_params", "id", TldParams.class);
 		arp.addMapping("tld_photos", "ID", TldPhotos.class);
+		arp.addMapping("tld_pnt_params", "id", TldPntParams.class);
 		arp.addMapping("tld_qrbgm_params", "ID", TldQrbgmParams.class);
 		arp.addMapping("tld_site_msg", "ID", TldSiteMsg.class);
+		arp.addMapping("tld_wechat_withdraw", "id", TldWechatWithdraw.class);
 		arp.addMapping("treenodes", "id", Treenodes.class);
 	}
 }
