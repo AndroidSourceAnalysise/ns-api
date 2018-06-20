@@ -8,6 +8,12 @@ appId = wx9610e6177a7c1b4b
 appSecret = 61d20d8ce9a2cf6a6aa75f067ec7a895
 token = ec4e14922a3049b281c9ab5241ea19d4
 
+#applet
+sappId=wx083da9de81f15187
+sappSecret=e18a35b0386af7b625433e2b7038e6d1
+code=https://api.weixin.qq.com/sns/jscode2session?appid=APPID&secret=SECRET&js_code=JSCODE&grant_type=authorization_code
+
+
 encryptMessage = true
 encodingAesKey = rs9sQmmfbXXbkRczU2dBKzUllcYP2fo2bgv3P9bwvTh
 

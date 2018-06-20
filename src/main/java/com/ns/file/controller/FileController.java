@@ -20,6 +20,7 @@ public class FileController extends BaseController {
             name = upFile.getParameterName();
             final String type = getPara("type"); // 表单数据 上传文件的类别
             fileAbsolutePath = COSClientManager.getInstance().uploadFile2COS(upFile.getFile(), type);
+            fileAbsolutePath = fileAbsolutePath.substring(0,fileAbsolutePath.lastIndexOf("?"));
             map.put("name", name);
             map.put("type", type);
             map.put("url", fileAbsolutePath);
