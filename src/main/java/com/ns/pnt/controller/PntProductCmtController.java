@@ -61,7 +61,7 @@ public class PntProductCmtController extends BaseController {
         int pageNumber = (int) map.get("page_number");
         int pageSize = (int) map.get("page_size");
         String pntId = (String) map.get("pnt_id");
-        String conId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(cmtService.getPntCmtList(pageNumber, pageSize, pntId, conId)));
     }
 

@@ -417,7 +417,7 @@ public class TldOrdersService {
             //上级+推广订单总数
             up1Ext.setOrdersProm(up1Ext.getOrdersProm() + 1);*/
 
-            //变更订单状态
+            //变更订单状态  回调回来变更状态?
             orders.setSTATUS(2);
             orders.update();
             split(orders);

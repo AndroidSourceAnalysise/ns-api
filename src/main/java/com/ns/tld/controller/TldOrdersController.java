@@ -48,7 +48,7 @@ public class TldOrdersController extends BaseController {
         Map params = getRequestObject(getRequest(), HashMap.class);
         int pageNumber = (int) params.get("page_number");
         int pageSize = (int) params.get("page_size");
-        final String rConId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        final String rConId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         Integer status = (Integer) params.get("status");
         renderJson(JsonResult.newJsonResult(ordersService.getOrderList(pageNumber, pageSize, rConId, status)));
     }
