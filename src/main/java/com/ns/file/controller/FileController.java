@@ -20,18 +20,14 @@ public class FileController extends BaseController {
             name = upFile.getParameterName();
             final String type = getPara("type"); // 表单数据 上传文件的类别
             fileAbsolutePath = COSClientManager.getInstance().uploadFile2COS(upFile.getFile(), type);
-            fileAbsolutePath = fileAbsolutePath.substring(0,fileAbsolutePath.lastIndexOf("?"));
+            fileAbsolutePath = fileAbsolutePath.substring(0, fileAbsolutePath.lastIndexOf("?"));
             map.put("name", name);
             map.put("type", type);
             map.put("url", fileAbsolutePath);
             list.add(map);
         }
         this.getResponse().setHeader("Access-Control-Allow-Origin", "*");
-        if (uploadFiles.size() > 1) {
-            renderJson(JsonResult.newJsonResult(list));
-        } else {
-            renderJson(JsonResult.newJsonResult(fileAbsolutePath));//单张图片上传，bug修复
-        }
+        renderJson(JsonResult.newJsonResult(list));
     }
 
 }
