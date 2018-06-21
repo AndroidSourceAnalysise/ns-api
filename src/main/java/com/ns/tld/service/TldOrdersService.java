@@ -101,9 +101,10 @@ public class TldOrdersService {
     }
 
 
-    //{"CON_ID":"1","COUNTRY":"中国","PROVINCE":"湖南省","CITY":"长沙市","DISTRICT":"岳麓区","ADDRESS":"雷锋大道","POSTAL_CODE":"412000","MOBILE":"13874133322","RECIPIENTS":"张三","FREIGHT":"0","PAYMENT_TYPEID":"0","PAYMENT_TYPE":"微信支付","ORDER_SOURCE":"1","ORDER_TYPE":"1"}
-    public Map<String, String> newOrder(JSONObject jsonObject) {
+    //{"COUNTRY":"中国","PROVINCE":"湖南省","CITY":"长沙市","DISTRICT":"岳麓区","ADDRESS":"雷锋大道","POSTAL_CODE":"412000","MOBILE":"13874133322","RECIPIENTS":"张三","FREIGHT":"0","PAYMENT_TYPEID":"0","PAYMENT_TYPE":"微信支付","ORDER_SOURCE":"1","ORDER_TYPE":"1"}
+    public Map<String, String> newOrder(String sk,JSONObject jsonObject) {
         TldOrders orders = jsonObject.toJavaObject(TldOrders.class);
+        orders.setConId((String) Redis.use().hmget(sk,RedisKeyDetail.CON_ID).get(0));
         BigDecimal couponAmount = BigDecimal.ZERO;
         BigDecimal pointAmount = BigDecimal.ZERO;
         BasCustomer customer = basCustomerService.getCustomerByIdNotNull(orders.getConId());
@@ -657,15 +658,7 @@ public class TldOrdersService {
             Jedis cache = Redis.use().getJedis();
             try {
                 for (Record items : itemsList) {
-                    final String skuId = items.getStr("SKU_ID");
-                    final String productId = items.getStr("PNT_ID");
-                    long quantity = Long.valueOf(items.getInt("QUANTITY"));
-                    // 有sku的回收sku库存，没有的回收产品库存
-                    if (StrKit.notBlank(skuId)) {
-                        cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, quantity);
-                    } else {
-                        cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
-                    }
+                    incrStock(cache, items);
                 }
             } finally {
                 cache.close();
@@ -730,20 +723,24 @@ public class TldOrdersService {
         Jedis cache = Redis.use().getJedis();
         try {
             for (Record items : itemsList) {
-                final String skuId = items.getStr("SKU_ID");
-                final String productId = items.getStr("PNT_ID");
-                long quantity = Long.valueOf(items.getInt("QUANTITY"));
-                // 有sku的回收sku库存，没有的回收产品库存
-                if (StrKit.notBlank(skuId)) {
-                    cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, quantity);
-                } else {
-                    cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
-                }
+                incrStock(cache, items);
             }
         } finally {
             cache.close();
         }
         return true;
+    }
+
+    private void incrStock(Jedis cache, Record items) {
+        final String skuId = items.getStr("SKU_ID");
+        final String productId = items.getStr("PNT_ID");
+        long quantity = Long.valueOf(items.getInt("QUANTITY"));
+        // 有sku的回收sku库存，没有的回收产品库存
+        if (StrKit.notBlank(skuId)) {
+            cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, quantity);
+        } else {
+            cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
+        }
     }
 
     public boolean confirmOrder(String orderId) {

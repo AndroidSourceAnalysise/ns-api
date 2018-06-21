@@ -16,7 +16,7 @@ public class AppletController extends BaseController {
     public void login() {
         final Map params = getRequestObject(getRequest(), HashMap.class);
         final String code = (String) params.get("code");
-        final String oldSK = getRequest().getHeader("sk");
+        final String oldSK = getHeader("sk");
         renderJson(JsonResult.newJsonResult(AppletService.getInstance().login(code, oldSK)));
     }
 

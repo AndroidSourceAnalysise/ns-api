@@ -41,7 +41,7 @@ public class TldOrdersController extends BaseController {
     @Before(Tx.class)
     public void newOrder() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);
-        renderJson(JsonResult.newJsonResult(ordersService.newOrder(jsonObject)));
+        renderJson(JsonResult.newJsonResult(ordersService.newOrder(getHeader("sk"),jsonObject)));
     }
 
     public void getOrderList() {
