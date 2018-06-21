@@ -83,15 +83,28 @@ public class PntProductService {
         return cache.get(key);
     }
 
+    /**
+     * 获取product，sku 库存集合
+     *
+     * @param pntId
+     * @param skuId
+     * @return
+     */
     public List<Map<String, Object>> getStock(String pntId, String skuId) {
         List<Map<String, Object>> resultList = new ArrayList<>();
         Map<String, Object> map = getProductDetial(pntId);
         List<PntSku> skus = (List<PntSku>) map.get("skuList");
         Cache cache = Redis.use();
+        // 如果传进来是sku，则返回sku库存，如果不是，则判断是否是sku，如果不是返回商品库存列表
         if (StrKit.isBlank(skuId)) {
             for (PntSku s : skus) {
                 Map<String, Object> stockMap = new HashMap<>();
-                stockMap.put(s.getID(), cache.getCounter(RedisKeyDetail.SKU_STOCK_ID + s.getID()));
+                String sd = s.getID();
+                if (StrKit.isBlank(sd)) {
+                    stockMap.put(pntId, cache.getCounter(RedisKeyDetail.PRODUCT_STOCK_ID + s.getID()));
+                } else {
+                    stockMap.put(s.getID(), cache.getCounter(RedisKeyDetail.SKU_STOCK_ID + s.getID()));
+                }
                 resultList.add(stockMap);
             }
         } else {

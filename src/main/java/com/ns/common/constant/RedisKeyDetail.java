@@ -43,6 +43,7 @@ public interface RedisKeyDetail {
      * SKU库存
      */
     String SKU_STOCK_ID = "SKU-STOCK-ID-";
+
     /**
      * 积分折扣率(百分制%)
      */

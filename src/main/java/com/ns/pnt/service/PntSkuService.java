@@ -37,11 +37,7 @@ public class PntSkuService {
     }
 
     public PntSku getById(String skuId) {
-        PntSku sku = dao.findFirst("select " + COLUMN + " from pnt_sku where ENABLED = 1 and ID = ? ", skuId);
-        if (sku == null) {
-            throw new CustException("系统异常，请刷新后重试！");
-        }
-        return sku;
+        return dao.findFirst("select " + COLUMN + " from pnt_sku where ENABLED = 1 and ID = ? ", skuId);
     }
 
 }

@@ -62,9 +62,44 @@ public class TldOrdersService {
     public static void main(String[] args) {
         BigDecimal a = new BigDecimal(799);
         int b = 5;
-        System.out.println(a.multiply(new BigDecimal(b)).divide(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).intValue());
+        System.out.println(a.multiply(new BigDecimal(b)).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue());
         System.out.println(a.multiply(new BigDecimal(b)).divide(new BigDecimal(100)).intValue());
     }
+
+    private int[] compute(boolean isTitter, PntProduct pntProduct, PntSku sku) {
+        String re_consume_rate = sysDictService.getByParamKey(RedisKeyDetail.RE_CONSUME_RATE);
+        int integralSelf = 0, integralSup = 0;
+        if (isTitter) {
+            BigDecimal disAmount;
+            if (sku != null) {
+                if (StrKit.notBlank(re_consume_rate)) {
+                    disAmount = sku.getSalPrice().multiply(new BigDecimal(re_consume_rate)).divide(new BigDecimal(10));
+                } else {
+                    disAmount = sku.getSalPrice();
+                }
+                integralSelf += disAmount.multiply(new BigDecimal(sku.getIntegralSelf())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+                integralSup += disAmount.multiply(new BigDecimal(sku.getIntegralSup())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+            } else {
+                if (StrKit.notBlank(re_consume_rate)) {
+                    disAmount = pntProduct.getSalPrice().multiply(new BigDecimal(re_consume_rate)).divide(new BigDecimal(10));
+                } else {
+                    disAmount = pntProduct.getSalPrice();
+                }
+                integralSelf += disAmount.multiply(new BigDecimal(pntProduct.getIntegralSelf())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+                integralSup += disAmount.multiply(new BigDecimal(pntProduct.getIntegralSup())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+            }
+        } else {
+            if (sku != null) {
+                integralSelf += sku.getSalPrice().multiply(new BigDecimal(sku.getIntegralSelf())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+                integralSup += sku.getSalPrice().multiply(new BigDecimal(sku.getIntegralSup())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+            } else {
+                integralSelf += pntProduct.getSalPrice().multiply(new BigDecimal(pntProduct.getIntegralSelf())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+                integralSup += pntProduct.getSalPrice().multiply(new BigDecimal(pntProduct.getIntegralSup())).divide(new BigDecimal(100)).setScale(0, BigDecimal.ROUND_HALF_UP).intValue();
+            }
+        }
+        return new int[]{integralSelf, integralSup};
+    }
+
 
     //{"CON_ID":"1","COUNTRY":"中国","PROVINCE":"湖南省","CITY":"长沙市","DISTRICT":"岳麓区","ADDRESS":"雷锋大道","POSTAL_CODE":"412000","MOBILE":"13874133322","RECIPIENTS":"张三","FREIGHT":"0","PAYMENT_TYPEID":"0","PAYMENT_TYPE":"微信支付","ORDER_SOURCE":"1","ORDER_TYPE":"1"}
     public Map<String, String> newOrder(JSONObject jsonObject) {
@@ -76,7 +111,6 @@ public class TldOrdersService {
         String orderNo = getOrderNoSeq();
 
         //orders.setFREIGHT(computeFreight())
-        String re_consume_rate = sysDictService.getByParamKey(RedisKeyDetail.RE_CONSUME_RATE);
         boolean isTitter = customer.getConType() == 1;//是否是推客
         String[] items = jsonObject.getString("ITEMS").split("\\|");
         //自己获得的积分
@@ -93,24 +127,29 @@ public class TldOrdersService {
             int quantity = Integer.valueOf(str[2]);
             PntProduct pntProduct = pntProductService.getById(pntId);
             PntSku sku = skuService.getById(skuId);
-            Long stock = Redis.use().getCounter(RedisKeyDetail.SKU_STOCK_ID + skuId);
-            if (stock == null || stock < quantity) {
-                throw new CustException(pntProduct.getProductName() + "-" + sku.getSKU() + ":库存不足！");
-            }
-            BigDecimal amt = sku.getSalPrice().multiply(new BigDecimal(quantity));
-            itemsList.add(setItems(customer, orderId, orderNo, sku, pntProduct, quantity, amt));
-            if (isTitter) {
-                BigDecimal disAmount;
-                if (StrKit.notBlank(re_consume_rate)) {
-                    disAmount = sku.getSalPrice().multiply(new BigDecimal(re_consume_rate)).divide(new BigDecimal(10));
-                }else{
-                    disAmount = sku.getSalPrice();
+            BigDecimal amt;
+            if (StrKit.notBlank(skuId)) {
+                // sku 库存
+                Long stock = Redis.use().getCounter(RedisKeyDetail.SKU_STOCK_ID + skuId);
+                if (stock == null || stock < quantity) {
+                    throw new CustException(pntProduct.getProductName() + "-" + sku.getSKU() + ":库存不足！");
                 }
-                integralSelf += disAmount.multiply(new BigDecimal(sku.getIntegralSelf())).divide(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).intValue();
-                integralSup += disAmount.multiply(new BigDecimal(sku.getIntegralSup())).divide(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).intValue();
-            }else{
-                integralSelf += sku.getSalPrice().multiply(new BigDecimal(sku.getIntegralSelf())).divide(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).intValue();
-                integralSup += sku.getSalPrice().multiply(new BigDecimal(sku.getIntegralSup())).divide(new BigDecimal(100)).setScale(0,BigDecimal.ROUND_HALF_UP).intValue();
+                amt = sku.getSalPrice().multiply(new BigDecimal(quantity));
+                itemsList.add(setItems(customer, orderId, orderNo, sku, pntProduct, quantity, amt));
+                int[] rs = compute(isTitter, pntProduct, sku);
+                integralSelf = rs[0];
+                integralSup = rs[1];
+            } else {
+                // 产品库存
+                Long stock = Redis.use().getCounter(RedisKeyDetail.PRODUCT_STOCK_ID + pntId);
+                if (stock == null || stock < quantity) {
+                    throw new CustException(pntProduct.getProductName() + "-" + ":库存不足！");
+                }
+                amt = pntProduct.getSalPrice().multiply(new BigDecimal(quantity));
+                itemsList.add(setItems(customer, orderId, orderNo, null, pntProduct, quantity, amt));
+                int[] rs = compute(isTitter, pntProduct, sku);
+                integralSelf = rs[0];
+                integralSup = rs[1];
             }
 //            integralSelf += sku.getIntegralSelf();
 //            integralSup += sku.getIntegralSup();
@@ -174,7 +213,8 @@ public class TldOrdersService {
         return packageParams;
     }
 
-    private TldOrderItems setItems(BasCustomer customer, String orderId, String orderNo, PntSku sku, PntProduct pntProduct, int quantity, BigDecimal amt) {
+    private TldOrderItems setItems(BasCustomer customer, String orderId, String orderNo, PntSku sku, PntProduct
+            pntProduct, int quantity, BigDecimal amt) {
         TldOrderItems orderItems = new TldOrderItems();
         orderItems.setID(GUIDUtil.getGUID());
         orderItems.setConId(customer.getID());
@@ -184,17 +224,18 @@ public class TldOrdersService {
         orderItems.setUpdateDt(DateUtil.getNow());
         orderItems.setOrderId(orderId);
         orderItems.setOrderNo(orderNo);
-        orderItems.setPntId(sku.getProductId());
+        orderItems.setPntId(sku != null ? sku.getProductId() : pntProduct.getID());
         orderItems.setPntName(pntProduct.getProductName());
-        orderItems.setSkuId(sku.getID());
-        orderItems.setSkuName(sku.getSKU());
-        orderItems.setSalePrice(sku.getSalPrice());
+        orderItems.setSkuId(sku != null ? sku.getID() : null);
+        orderItems.setSkuName(sku != null ? sku.getSKU() : null);
+        orderItems.setSalePrice(sku != null ? sku.getSalPrice() : pntProduct.getSalPrice());
         orderItems.setQUANTITY(quantity);
         orderItems.setAMOUNT(amt);
         return orderItems;
     }
 
-    private TldOrders setOrders(TldOrders orders, String orderId, String orderNo, BasCustomer customer, int integralSelf, int integralSup, BigDecimal pntAmountSum, BigDecimal couponAmount, BigDecimal pointAmount) {
+    private TldOrders setOrders(TldOrders orders, String orderId, String orderNo, BasCustomer customer,
+                                int integralSelf, int integralSup, BigDecimal pntAmountSum, BigDecimal couponAmount, BigDecimal pointAmount) {
         //重消优惠
         BigDecimal disAmount = BigDecimal.ZERO;
         if (customer.getConType() == 1) {
@@ -236,11 +277,21 @@ public class TldOrdersService {
         try {
             for (String item : items) {
                 String[] str = item.split("&");
+                String productId = str[0];
                 String skuId = str[1];
                 int quantity = Integer.valueOf(str[2]);
-                long rs = cache.decrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, Long.valueOf(quantity));
+                long rs;
+                if (StrKit.notBlank(skuId)) {
+                    rs = cache.decrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, Long.valueOf(quantity));
+                } else {
+                    rs = cache.decrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, Long.valueOf(quantity));
+                }
                 if (rs < 0) {
-                    cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, Long.valueOf(quantity));
+                    if (StrKit.notBlank(skuId)) {
+                        cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, Long.valueOf(quantity));
+                    } else {
+                        cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, Long.valueOf(quantity));
+                    }
                     throw new CustException("库存不足！");
                 }
             }
@@ -460,7 +511,8 @@ public class TldOrdersService {
         }
     }
 
-    private void inertOrderSplit(TldOrders orders, String pntId, String pntName, String skuId, String skuName, int splitNum, BigDecimal price) {
+    private void inertOrderSplit(TldOrders orders, String pntId, String pntName, String skuId, String skuName,
+                                 int splitNum, BigDecimal price) {
         TldOrderSplit split = new TldOrderSplit();
         split.setID(GUIDUtil.getGUID());
         split.setOrderId(orders.getID());
@@ -504,7 +556,9 @@ public class TldOrdersService {
      * @param pointsType
      * @param remark
      */
-    private void insertPointTrans(String conId, String conNo, String conName, String fromConId, String fromConNo, String fromConName, String orderId, String orderNo, Integer pointsQty, Integer pointsType, String remark) {
+    private void insertPointTrans(String conId, String conNo, String conName, String fromConId, String
+            fromConNo, String fromConName, String orderId, String orderNo, Integer pointsQty, Integer pointsType, String
+                                          remark) {
         BasCustPointTrans trans = new BasCustPointTrans();
         trans.setID(GUIDUtil.getGUID());
         trans.setConId(conId);
@@ -599,11 +653,19 @@ public class TldOrdersService {
             String remark = "";
             Db.update("update tld_orders set STATUS = 12,VERSION = VERSION +1,UPDATE_DT = ?,REMARK = ? where id = ?", DateUtil.getNow(), remark, orderId);
             //还原库存
-            List<Record> itemsList = Db.find("select SKU_ID,QUANTITY from tld_order_items where order_id = ?", orderId);
+            List<Record> itemsList = Db.find("select SKU_ID,PNT_ID,QUANTITY from tld_order_items where order_id = ?", orderId);
             Jedis cache = Redis.use().getJedis();
             try {
                 for (Record items : itemsList) {
-                    cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + items.getStr("SKU_ID"), Long.valueOf(items.getInt("QUANTITY")));
+                    final String skuId = items.getStr("SKU_ID");
+                    final String productId = items.getStr("PNT_ID");
+                    long quantity = Long.valueOf(items.getInt("QUANTITY"));
+                    // 有sku的回收sku库存，没有的回收产品库存
+                    if (StrKit.notBlank(skuId)) {
+                        cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, quantity);
+                    } else {
+                        cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
+                    }
                 }
             } finally {
                 cache.close();
@@ -664,11 +726,19 @@ public class TldOrdersService {
             Db.update("update bas_customer set con_type = 0 where id = ?", orders.getConId());
         }
         //还原库存
-        List<Record> itemsList = Db.find("select SKU_ID,QUANTITY from tld_order_items where order_id = ?", orderId);
+        List<Record> itemsList = Db.find("select SKU_ID,PNT_ID,QUANTITY from tld_order_items where order_id = ?", orderId);
         Jedis cache = Redis.use().getJedis();
         try {
             for (Record items : itemsList) {
-                cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + items.getStr("SKU_ID"), Long.valueOf(items.getInt("QUANTITY")));
+                final String skuId = items.getStr("SKU_ID");
+                final String productId = items.getStr("PNT_ID");
+                long quantity = Long.valueOf(items.getInt("QUANTITY"));
+                // 有sku的回收sku库存，没有的回收产品库存
+                if (StrKit.notBlank(skuId)) {
+                    cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, quantity);
+                } else {
+                    cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
+                }
             }
         } finally {
             cache.close();

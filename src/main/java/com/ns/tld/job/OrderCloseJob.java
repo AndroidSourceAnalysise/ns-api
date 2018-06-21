@@ -72,11 +72,19 @@ public class OrderCloseJob implements Job {
             String remark = "未付款自动关闭";
             Db.update("update tld_orders set STATUS = 11,VERSION = VERSION +1,UPDATE_DT = ?,REMARK = ? where id = ?", dateTime, remark, orderId);
             //还原库存
-            List<Record> itemsList = Db.find("select SKU_ID,QUANTITY from tld_order_items where order_id = ?", orderId);
+            List<Record> itemsList = Db.find("select SKU_ID,PNT_ID,QUANTITY from tld_order_items where order_id = ?", orderId);
             Jedis cache = Redis.use().getJedis();
             try {
                 for (Record items : itemsList) {
-                    cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + items.getStr("SKU_ID"), Long.valueOf(items.getInt("QUANTITY")));
+                    final String skuId = items.getStr("SKU_ID");
+                    final String productId = items.getStr("PNT_ID");
+                    long quantity = Long.valueOf(items.getInt("QUANTITY"));
+                    // 有sku的回收sku库存，没有的回收产品库存
+                    if (StrKit.notBlank(skuId)) {
+                        cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, quantity);
+                    } else {
+                        cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
+                    }
                 }
             } finally {
                 cache.close();
