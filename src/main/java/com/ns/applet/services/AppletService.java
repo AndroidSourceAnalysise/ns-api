@@ -6,12 +6,14 @@ import com.jfinal.kit.PropKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.plugin.redis.Cache;
 import com.jfinal.plugin.redis.Redis;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.exception.CustException;
 import com.ns.common.utils.Util;
 import com.ns.customer.service.BasCustomerService;
 import org.apache.commons.codec.binary.Base64;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,11 +33,11 @@ public class AppletService {
         return INSTANCE;
     }
 
-    public Object saveCustomerInfo(String sk, String body) {
+    public boolean saveCustomerInfo(String sk, String body) {
         Map params = JSON.parseObject(body, HashMap.class);
         final String rawData = (String) params.get("rawData");
         final String signature = (String) params.get("signature");
-        final String sessionKey = Redis.use().get(sk);
+        final String sessionKey = (String) Redis.use().hmget(sk, RedisKeyDetail.SESSION_KEY).get(0);
         final String sg = Util.sha1(rawData + sessionKey);
         if (!signature.equalsIgnoreCase(sg)) {
             throw new CustException("数据检验失败!");
@@ -72,9 +74,11 @@ public class AppletService {
             } else {
                 bcs.updateAppletCustomer(nickName, avatarUrl, gender, "", country, province, city, conId);
             }
-            Map response = new HashMap();
-            response.put("con_id", conId);
-            return response;
+            final List rConId = Redis.use().hmget(sk, RedisKeyDetail.CON_ID);
+            if (rConId == null || rConId.isEmpty()) {
+                Redis.use().hset(sk, RedisKeyDetail.CON_ID, conId);
+            }
+            return true;
         } catch (Throwable throwable) {
             throw new CustException("数据解析失败!");
         }
@@ -88,35 +92,45 @@ public class AppletService {
      * @return
      */
     public Object login(String code, String oldSk) {
+        String rs;
         try {
-            String rs = HttpKit.get(CODE.replace("APPID", APPID).replace("SECRET", APPSECRET).replace("JSCODE", code));
-            Map result = JSON.parseObject(rs, HashMap.class);
-            if (rs.contains("errcode")) {
-                throw new CustException((int) result.get("errcode"), (String) result.get("errmsg"));
-            }
-            String openId = (String) result.get("openid");
-            String sessionKey = (String) result.get("session_key");
-            String unionid = (String) result.get("unionid");
-            // 如果开发者帐号下存在同主体的公众号，并且该用户已经关注了该公众号。开发者可以直接通过wx.login获取到该用户UnionID，无须用户再次授权。
-            // 如果开发者帐号下存在同主体的公众号或移动应用，并且该用户已经授权登录过该公众号或移动应用。开发者也可以直接通过wx.login获取到该用户UnionID，无须用户再次授权。
-            // 调用接口wx.getUserInfo，从解密数据中获取UnionID。注意本接口需要用户授权，请开发者妥善处理用户拒绝授权后的情况。
-            String sk = generateSession(sessionKey, oldSk);
-            HashMap<String, Object> response = new HashMap<>();
-            response.put("sk", sk);
-            String conId = BasCustomerService.me.isExistCustomerByUnionId(unionid);
-            response.put("con_id", conId);
-            return response;
+            rs = HttpKit.get(CODE.replace("APPID", APPID).replace("SECRET", APPSECRET).replace("JSCODE", code));
         } catch (Throwable throwable) {
-            throw new CustException(-1, "网络链接异常!");
+            throw new CustException("网络连接异常!");
         }
+        Map result = JSON.parseObject(rs, HashMap.class);
+        if (rs.contains("errcode")) {
+            throw new CustException((int) result.get("errcode"), (String) result.get("errmsg"));
+        }
+        String openId = (String) result.get("openid");
+        String sessionKey = (String) result.get("session_key");
+        String unionid = (String) result.get("unionid");
+        // 如果开发者帐号下存在同主体的公众号，并且该用户已经关注了该公众号。开发者可以直接通过wx.login获取到该用户UnionID，无须用户再次授权。
+        // 如果开发者帐号下存在同主体的公众号或移动应用，并且该用户已经授权登录过该公众号或移动应用。开发者也可以直接通过wx.login获取到该用户UnionID，无须用户再次授权。
+        // 调用接口wx.getUserInfo，从解密数据中获取UnionID。注意本接口需要用户授权，请开发者妥善处理用户拒绝授权后的情况。
+        HashMap<String, Object> response = new HashMap<>();
+        String conId = BasCustomerService.me.isExistCustomerByUnionId(unionid);
+        String sk = generateSession(sessionKey, oldSk, conId);
+        response.put("sk", sk);
+        response.put("isRegistered", StrKit.notBlank(conId));
+        return response;
+
 
     }
 
-    private String generateSession(String sessionKey, String oldSK) {
+    private String generateSession(String sessionKey, String oldSK, String conId) {
         String sk = UUID.randomUUID().toString();
         Cache cache = Redis.use();
-        long i = cache.del(oldSK);
-        String result = cache.set(sk, sessionKey);
+        if (StrKit.notBlank(oldSK)) {
+            long i = cache.del(oldSK);
+            System.out.println(i);
+        }
+        Map rm = new HashMap();
+        rm.put(RedisKeyDetail.SESSION_KEY, sessionKey);
+        if (StrKit.notBlank(conId)) {
+            rm.put(RedisKeyDetail.CON_ID, conId);
+        }
+        String result = cache.hmset(sk, rm);
         return sk;
     }
 }

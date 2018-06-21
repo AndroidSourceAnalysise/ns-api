@@ -9,7 +9,9 @@
 package com.ns.pnt.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.plugin.redis.Redis;
 import com.ns.common.base.BaseController;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.common.model.PntProductCmt;
 import com.ns.common.utils.Util;
@@ -17,6 +19,10 @@ import com.ns.pnt.service.PntProductCmtService;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import sun.misc.Cache;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * description: //TODO <br>
@@ -51,10 +57,11 @@ public class PntProductCmtController extends BaseController {
     }
 
     public void getPntCmtList() {
-        int pageNumber = getParaToInt("page_number");
-        int pageSize = getParaToInt("page_size");
-        String pntId = getPara("pnt_id");
-        String conId = getPara("con_id");
+        Map map = getRequestObject(getRequest(), HashMap.class);
+        int pageNumber = (int) map.get("page_number");
+        int pageSize = (int) map.get("page_size");
+        String pntId = (String) map.get("pnt_id");
+        String conId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(cmtService.getPntCmtList(pageNumber, pageSize, pntId, conId)));
     }
 

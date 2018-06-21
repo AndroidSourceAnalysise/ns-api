@@ -5,13 +5,17 @@ import com.ns.common.base.BaseController;
 import com.ns.common.json.JsonResult;
 import com.ns.common.utils.Util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class AppletController extends BaseController {
     /**
      * 登录
      */
     public void login() {
-        final String code = getPara("code");
+        final Map params = getRequestObject(getRequest(), HashMap.class);
+        final String code = (String) params.get("code");
         final String oldSK = getRequest().getHeader("sk");
         renderJson(JsonResult.newJsonResult(AppletService.getInstance().login(code, oldSK)));
     }

@@ -19,7 +19,9 @@ import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.redis.Cache;
 import com.jfinal.plugin.redis.Redis;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * description: //TODO <br>
@@ -33,14 +35,16 @@ public class PntProductController extends BaseController {
     static PntProductService pntProductService = PntProductService.me;
 
     public void getProductList() {
-        renderJson(JsonResult.newJsonResult(pntProductService.getProducts(getParaToInt("page_number", 1), getParaToInt("page_size", 100))));
+        Map params = getRequestObject(getRequest(),HashMap.class);
+        renderJson(JsonResult.newJsonResult(pntProductService.getProducts((Integer) params.get("page_number"), (Integer) params.get("page_size"))));
     }
     public void getProductByName() {
         renderJson(JsonResult.newJsonResult(pntProductService.getProductByName(getPara("name"))));
     }
 
     public void getProductById() {
-        renderJson(JsonResult.newJsonResult(pntProductService.getProductDetial(getPara("pnt_id"))));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(pntProductService.getProductDetial((String) params.get("pnt_id"))));
     }
 
     public void getStock() {

@@ -1,7 +1,9 @@
 package com.ns.cart.controller;
 
+import com.jfinal.plugin.redis.Redis;
 import com.ns.cart.service.ShopCartService;
 import com.ns.common.base.BaseController;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class ShopCartController extends BaseController {
      * 购物车列表
      */
     public void list() {
-        String conId = (String) getRequestObject(getRequest(), HashMap.class).get("con_id");
+        String conId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(ShopCartService.list(conId)));
     }
 
@@ -48,7 +50,7 @@ public class ShopCartController extends BaseController {
     public void selectAll() {
         Map params = getRequestObject(getRequest(), HashMap.class);
         final int allSelect = (int) params.get("all_select");
-        final String conId = (String) params.get("con_id");
+        final String conId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(ShopCartService.selectAll(allSelect, conId)));
     }
 
@@ -58,7 +60,7 @@ public class ShopCartController extends BaseController {
     public void select() {
         Map params = getRequestObject(getRequest(), HashMap.class);
         final int isSelect = (int) params.get("is_select");
-        final String conId = (String) params.get("con_id");
+        final String conId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(ShopCartService.select(isSelect, conId)));
     }
 }

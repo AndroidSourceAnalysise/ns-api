@@ -71,4 +71,10 @@ public interface RedisKeyDetail {
      * 验证码有效期 分钟
      */
     String VALID_TIME = "VALID_TIME";
+
+    String SESSION = "SESSION";
+
+    String SESSION_KEY = "SESSION_KEY";
+
+    String CON_ID = "CON_ID";
 }

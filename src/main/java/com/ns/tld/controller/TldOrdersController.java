@@ -9,8 +9,10 @@
 package com.ns.tld.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.plugin.redis.Redis;
 import com.ns.common.Ytapi;
 import com.ns.common.base.BaseController;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.common.utils.Util;
 import com.ns.tld.service.TldOrdersService;
@@ -19,8 +21,10 @@ import com.jfinal.kit.HttpKit;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
+import sun.misc.Cache;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,17 +45,19 @@ public class TldOrdersController extends BaseController {
     }
 
     public void getOrderList() {
-        int pageNumber = getParaToInt("pageNumber", 1);
-        int pageSize = getParaToInt("pageSize", 10);
-        String conId = getPara("conId");
-        Integer status = getParaToInt("status");
-        renderJson(JsonResult.newJsonResult(ordersService.getOrderList(pageNumber, pageSize, conId, status)));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        int pageNumber = (int) params.get("page_number");
+        int pageSize = (int) params.get("page_size");
+        final String rConId = (String) Redis.use().hmget(getRequest().getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        Integer status = (Integer) params.get("status");
+        renderJson(JsonResult.newJsonResult(ordersService.getOrderList(pageNumber, pageSize, rConId, status)));
     }
 
     public void orderStatusNum() {
         String conId = getPara("conId");
         renderJson(JsonResult.newJsonResult(ordersService.getOrderStatusNum(conId)));
     }
+
     @Before(Tx.class)
     public void updateOrderStatus13() {
         String conId = getPara("conId");

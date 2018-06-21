@@ -14,6 +14,9 @@ import com.ns.common.model.SysDict;
 import com.ns.common.utils.Util;
 import com.ns.sys.service.SysDictService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * description: //TODO <br>
  * date: 2018-02-12 16:12
@@ -27,7 +30,8 @@ public class SysDictController extends BaseController {
 
 
     public void getByParamKey() {
-        String paramKey = getPara("paramKey");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String paramKey = (String) params.get("paramKey");
         renderJson(JsonResult.newJsonResult(sysDictService.getByParamKey(paramKey)));
     }
 }
