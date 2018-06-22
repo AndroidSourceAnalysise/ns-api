@@ -41,18 +41,20 @@ public class PntProductCmtController extends BaseController {
     public void inertCMT() {
         JSONObject json = Util.getRequestObject(getRequest(), JSONObject.class);
         PntProductCmt cmt = JSONObject.toJavaObject(json, PntProductCmt.class);
-        renderJson(JsonResult.newJsonResult(cmtService.inertCMT(cmt, json.getString("ITEM_ID"))));
+        renderJson(JsonResult.newJsonResult(cmtService.inertCMT(cmt, json.getString("item_id"))));
     }
 
     public void pntCmtLike() {
-        String cmtId = getPara("cmtId");
-        String conId = getPara("conId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String cmtId = (String) params.get("cmt_id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(cmtService.pntCmtLike(cmtId, conId)));
     }
 
     public void cancelLike() {
-        String cmtId = getPara("cmtId");
-        String conId = getPara("conId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String cmtId = (String) params.get("cmt_id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(Db.delete("delete from bas_cust_like where ENABLED = 1 AND SOURCE_ID = ? AND CON_ID = ?", cmtId, conId) > 0));
     }
 
@@ -66,10 +68,11 @@ public class PntProductCmtController extends BaseController {
     }
 
     public void getPntCmtChildren() {
-        int pageNumber = getParaToInt("pageNumber");
-        int pageSize = getParaToInt("pageSize");
-        String id = getPara("id");
-        String conId = getPara("conId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        int pageNumber = (int) params.get("page_number");
+        int pageSize = (int) params.get("page_size");
+        String id = (String) params.get("id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(cmtService.getPntCmtChildren(pageNumber, pageSize, id, conId)));
     }
 }

@@ -8,7 +8,9 @@
  */
 package com.ns.tld.controller;
 
+import com.jfinal.plugin.redis.Redis;
 import com.ns.common.base.BaseController;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.common.model.TldCoupon;
 import com.ns.common.model.TldCouponGrant;
@@ -31,13 +33,14 @@ public class TldCouponController extends BaseController {
     static TldCouponGrantService tldCouponGrantService = TldCouponGrantService.me;
 
     public void getTldCouponList() {
-        renderJson(JsonResult.newJsonResult(tldCouponService.getTldCouponList(getPara("conId"))));
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        renderJson(JsonResult.newJsonResult(tldCouponService.getTldCouponList(conId)));
     }
 
     @Before({Tx.class})
     public void receiveCoupon() {
-        String conId = getPara("conId");
-        String couponId = getPara("couponId");
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        String couponId = getPara("coupon_id");
         tldCouponService.receiveCoupon(conId, couponId);
         renderJson(JsonResult.newJsonResult(true));
     }
@@ -46,9 +49,12 @@ public class TldCouponController extends BaseController {
      * 我的优惠券
      */
     public void getTldCouponGrantList() {
-        renderJson(JsonResult.newJsonResult(tldCouponGrantService.getByConId(getPara("conId"))));
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        renderJson(JsonResult.newJsonResult(tldCouponGrantService.getByConId(conId)));
     }
-    public void getUsableCoupon(){
-        renderJson(JsonResult.newJsonResult(tldCouponGrantService.getUsableCoupon(getPara("conId"))));
+
+    public void getUsableCoupon() {
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        renderJson(JsonResult.newJsonResult(tldCouponGrantService.getUsableCoupon(conId)));
     }
 }

@@ -89,7 +89,10 @@ public class WeixinPayController extends Controller {
                 return;
             }
         }
-        renderText("");
+        Map<String, String> xml = new HashMap<String, String>();
+        xml.put("return_code", "FAIL");
+        xml.put("return_msg", "FAIL");
+        renderText(PaymentKit.toXml(xml));
     }
 
     /**

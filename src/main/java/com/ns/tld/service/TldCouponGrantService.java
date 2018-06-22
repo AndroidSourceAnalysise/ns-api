@@ -54,35 +54,41 @@ public class TldCouponGrantService {
 
     public List<TldCouponGrant> getByConId(String conId) {
         List<TldCouponGrant> grantsList = dao.find("select " + COLUMN + " from tld_coupon_grant where enabled = 1 and con_Id = ? ORDER BY UPDATE_DT desc", conId);
-        pastDue(grantsList);
-        return pastDue(grantsList);
+        return pastDue(grantsList, false);
     }
 
     public List<TldCouponGrant> getUsableCoupon(String conId) {
         List<TldCouponGrant> grantsList = dao.find("select " + COLUMN + " from tld_coupon_grant where enabled = 1 and status = 0 and con_Id = ? ORDER BY UPDATE_DT desc", conId);
-        return pastDue(grantsList);
+        return pastDue(grantsList, true);
     }
 
     /**
      * 过期
+     *
      * @param grantsList
      * @return
      */
-    public List<TldCouponGrant> pastDue(List<TldCouponGrant> grantsList) {
+    public List<TldCouponGrant> pastDue(List<TldCouponGrant> grantsList, boolean remove) {
         Iterator<TldCouponGrant> i = grantsList.iterator();
         while (i.hasNext()) {
             TldCouponGrant grant = i.next();
             if (grant.getSTATUS() == 0) {
                 String dateTime = DateUtil.getNow(DateUtil.DEFAULT_DATE_TIME_RFGFX);
                 if (!DateUtil.isTween(dateTime, grant.getStartDt(), grant.getEndDt(), DateUtil.DEFAULT_DATE_TIME_RFGFX)) {
-                    grant.setSTATUS(2);
-                    grant.setUpdateDt(DateUtil.getNow());
-                    grant.update();
+                    if (grant.update()) {
+                        grant.setSTATUS(2);
+                        grant.setUpdateDt(DateUtil.getNow());
+                        if (remove) {
+                            i.remove();
+                        }
+                    }
+
                 }
             }
         }
         return grantsList;
     }
+
 
     public static void main(String[] args) {
         //2018-03-20 15:47:11

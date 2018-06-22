@@ -8,11 +8,16 @@
  */
 package com.ns.tld.controller;
 
+import com.jfinal.plugin.redis.Redis;
 import com.ns.common.base.BaseController;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.common.model.TldSiteMsg;
 import com.ns.common.utils.Util;
 import com.ns.tld.service.TldSiteMsgService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * description: //TODO <br>
@@ -32,10 +37,11 @@ public class TldSiteMsgController extends BaseController {
     }
 
     public void getMsg() {
-        String conId = getPara("conId");
-        int pageNumber = getParaToInt("pageNumber", 1);
-        int pageSize = getParaToInt("pageSize", 10);
-        String type = getPara("type");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        int pageNumber = (int) params.get("page_number");
+        int pageSize = (int) params.get("page_size");
+        String type = (String) params.get("type");
         renderJson(JsonResult.newJsonResult(msgService.getMsg(pageNumber, pageSize, conId, type)));
     }
 }
