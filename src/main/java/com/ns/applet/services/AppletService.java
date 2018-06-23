@@ -13,7 +13,6 @@ import com.ns.customer.service.BasCustomerService;
 import org.apache.commons.codec.binary.Base64;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -51,17 +50,17 @@ public class AppletService {
             final byte[] data = Util.AES_CBC_Decrypt(bed, bsessionKey, biv);
             final String decrtptedData = new String(data, "UTF-8");
             Map rs = JSON.parseObject(decrtptedData, HashMap.class);
-            final String watermark = (String) rs.get("watermark");
-            Map mwa = JSON.parseObject(watermark, HashMap.class);
+            final com.alibaba.fastjson.JSONObject watermark = (com.alibaba.fastjson.JSONObject) rs.get("watermark");
             // wx083da9de81f15187
-            final String appid = (String) mwa.get("appid");
-            if (APPID.equalsIgnoreCase(appid)) {
+            final String appid = (String) watermark.get("appid");
+            if (!(APPID.equalsIgnoreCase(appid))) {
                 throw new CustException("数据水印检验失败!");
             }
             BasCustomerService bcs = BasCustomerService.me;
+            // o6Xwh1gCKLQFarU2mBrr6gcscrUs
             final String unionId = (String) rs.get("unionId");
             String conId = bcs.isExistCustomerByUnionId(unionId);
-            final String openId = (String) rs.get("OPENID");
+            final String openId = (String) rs.get("openId");
             final String nickName = (String) rs.get("nickName");
             final int gender = (int) rs.get("gender");
             final String city = (String) rs.get("city");
@@ -74,8 +73,8 @@ public class AppletService {
             } else {
                 bcs.updateAppletCustomer(nickName, avatarUrl, gender, "", country, province, city, conId);
             }
-            final List rConId = Redis.use().hmget(sk, RedisKeyDetail.CON_ID);
-            if (rConId == null || rConId.isEmpty()) {
+            final String rConId = (String) Redis.use().hmget(sk, RedisKeyDetail.CON_ID).get(0);
+            if (StrKit.isBlank(rConId) || !(rConId.equalsIgnoreCase(conId))) {
                 Redis.use().hset(sk, RedisKeyDetail.CON_ID, conId);
             }
             return true;

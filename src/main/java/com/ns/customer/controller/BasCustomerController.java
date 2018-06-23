@@ -56,9 +56,10 @@ public class BasCustomerController extends BaseController {
         renderJson(JsonResult.newJsonResult(service.getCustomerByIdNotNull(getPara("conId"))));
     }
 
+
     public void getByConNo() {
         renderJson(JsonResult.newJsonResult(service.getCustomerByConNoNotNull(getPara("conNo"))));
-    }
+}
 
     public void update() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);

@@ -14,6 +14,9 @@ import com.ns.common.model.BasCustomerRequest;
 import com.ns.common.utils.Util;
 import com.ns.customer.service.BasCustomerRequestService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * description: //TODO <br>
  * date: 2018-03-22 9:55
@@ -26,14 +29,15 @@ public class BasCustomerRequestController extends BaseController {
     static BasCustomerRequestService basCustomerRequestService = BasCustomerRequestService.me;
 
     public void applyForRefund() {
-        String orderId = getPara("orderId");
-        Integer returnReason = getParaToInt("returnReason");
-        String pic1 = getPara("pic1");
-        String pic2 = getPara("pic2");
-        String pic3 = getPara("pic3");
-        String remark = getPara("remark");
-        String expWaybill = getPara("expWaybill");
-        String expCompanyId = getPara("expCompanyId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String orderId = (String) params.get("orderId");
+        Integer returnReason = (Integer) params.get("returnReason");
+        String pic1 = (String) params.get("pic1");
+        String pic2 = (String) params.get("pic2");
+        String pic3 = (String) params.get("pic3");
+        String remark = (String) params.get("remark");
+        String expWaybill = (String) params.get("expWaybill");
+        String expCompanyId = (String) params.get("expCompanyId");
         renderJson(JsonResult.newJsonResult(basCustomerRequestService.applyForRefund(orderId, returnReason, pic1, pic2, pic3, remark, expWaybill, expCompanyId)));
     }
 
@@ -44,17 +48,20 @@ public class BasCustomerRequestController extends BaseController {
     }
 
     public void getById() {
-        String id = getPara("id");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String id = (String) params.get("id");
         renderJson(JsonResult.newJsonResult(basCustomerRequestService.getById(id)));
     }
 
     public void getByConId() {
-        String conId = getPara("conId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String conId = (String) params.get("conId");
         renderJson(JsonResult.newJsonResult(basCustomerRequestService.getByConId(conId)));
     }
 
     public void getByOrderId() {
-        String orderId = getPara("orderId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String orderId = (String) params.get("orderId");
         renderJson(JsonResult.newJsonResult(basCustomerRequestService.getByOrderId(orderId)));
     }
 }

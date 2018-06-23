@@ -41,7 +41,7 @@ public class TldOrdersController extends BaseController {
     @Before(Tx.class)
     public void newOrder() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);
-        renderJson(JsonResult.newJsonResult(ordersService.newOrder(getHeader("sk"),jsonObject)));
+        renderJson(JsonResult.newJsonResult(ordersService.newOrder(getHeader("sk"), jsonObject)));
     }
 
     public void getOrderList() {
@@ -54,50 +54,57 @@ public class TldOrdersController extends BaseController {
     }
 
     public void orderStatusNum() {
-        String conId = getPara("conId");
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(ordersService.getOrderStatusNum(conId)));
     }
 
     @Before(Tx.class)
     public void updateOrderStatus13() {
-        String conId = getPara("conId");
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         ordersService.updateOrderStatus13(conId);
         renderJson(JsonResult.newJsonResult(true));
     }
 
     public void getOrderItems() {
-        String orderId = getPara("orderId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String orderId = (String) params.get("orderId");
         renderJson(JsonResult.newJsonResult(ordersService.getOrderItems(orderId)));
     }
 
     @Before(Tx.class)
     public void offlinePay() {
-        String conId = getPara("orderId");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        String conId = (String) params.get("orderId");
         ordersService.orderPay(conId, 1);
         renderJson(JsonResult.newJsonResult(true));
     }
 
     @Before(Tx.class)
     public void deleteOrder() {
-        renderJson(JsonResult.newJsonResult(ordersService.deleteOrder(getPara("orderId"))));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(ordersService.deleteOrder((String) params.get("orderId"))));
     }
 
     @Before(Tx.class)
     public void refund() {
-        renderJson(JsonResult.newJsonResult(ordersService.refund(getPara("orderId"))));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(ordersService.refund((String) params.get("orderId"))));
     }
 
     @Before(Tx.class)
     public void confirmOrder() {
-        renderJson(JsonResult.newJsonResult(ordersService.confirmOrder(getPara("orderId"))));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(ordersService.confirmOrder((String) params.get("orderId"))));
     }
 
     public void getWaybill() {
-        renderText(Ytapi.ytPost(getPara("billNo")));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderText(Ytapi.ytPost((String) params.get("billNo")));
     }
 
     public void getOrderSplit() {
-        renderJson(JsonResult.newJsonResult(ordersService.getOrderSplit(getPara("orderId"))));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(ordersService.getOrderSplit((String) params.get("orderId"))));
     }
 
     public static void main(String[] args) {

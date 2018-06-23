@@ -42,6 +42,8 @@ public class BasCustomerService {
     private static final String COLUMN = "ID,CON_NO,CON_NAME,REAL_NAME,CON_TYPE,PIC,SEX,BIRTHDAY,COUNTRY,PROVINCE,CITY,DISTRICT,ADDRESS,MOBILE,UNION_ID,OPENID," +
             "IS_LOCKOUT,RP_ID,RP_NO,RP_NAME,IS_SUBSCRIBE,ENABLED,VERSION,STATUS,REMARK,CREATE_BY,CREATE_DT,UPDATE_DT ";
     private static final String BY_UNIONID_SQL = "select t.ID from bas_customer t where UNION_ID=?";
+    private static final String BY_ID_SQL = "select t.CON_NAME,t.PIC,t.SEX,t.BIRTHDAY,t.COUNTRY,t.PROVINCE,t.CITY,t.DISTRICT,t.ADDRESS from bas_customer t where ID=?";
+
 
     private final BasCustomer dao = new BasCustomer().dao();
     static BasCustomerExtService extService = BasCustomerExtService.me;
@@ -49,11 +51,12 @@ public class BasCustomerService {
     static TldIdentifyCodeService identifyCodeService = TldIdentifyCodeService.me;
 
     public String isExistCustomerByUnionId(String unionId) {
-        if(StrKit.isBlank(unionId)){
+        if (StrKit.isBlank(unionId)) {
             return null;
         }
         return Db.queryStr(BY_UNIONID_SQL, unionId);
     }
+
 
     /**
      * 关注新增会员
@@ -170,16 +173,30 @@ public class BasCustomerService {
     }
 
     public boolean updateAppletCustomer(String conName, String pic, int sex, String birthDay, String country, String province, String city, String conId) {
+        Record record = Db.findFirst(BY_ID_SQL, conId);
         BasCustomer customer = new BasCustomer();
         customer.setID(conId);
-        customer.setConName(conName);
-        customer.setPIC(pic);
-        customer.setSEX(sex);
-        customer.setBIRTHDAY(birthDay);
-        customer.setCOUNTRY(country);
-        customer.setPROVINCE(province);
-        customer.setCITY(city);
-        customer.setCreateDt(DateUtil.getNow());
+        if (StrKit.isBlank(record.getStr("CON_NAME"))) {
+            customer.setConName(conName);
+        }
+        if (StrKit.isBlank(record.getStr("PIC"))) {
+            customer.setPIC(pic);
+        }
+        if (StrKit.isBlank(record.getStr("SEX"))) {
+            customer.setSEX(sex);
+        }
+        if (StrKit.isBlank(record.getStr("BIRTHDAY"))) {
+            customer.setBIRTHDAY(birthDay);
+        }
+        if (StrKit.isBlank(record.getStr("COUNTRY"))) {
+            customer.setCOUNTRY(country);
+        }
+        if (StrKit.isBlank(record.getStr("PROVINCE"))) {
+            customer.setPROVINCE(province);
+        }
+        if (StrKit.isBlank(record.getStr("CITY"))) {
+            customer.setCITY(city);
+        }
         customer.setUpdateDt(DateUtil.getNow());
         return customer.update();
     }

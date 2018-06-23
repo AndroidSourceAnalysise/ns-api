@@ -539,7 +539,7 @@ public class Util {
     }
 
     private static Cipher getCipher(int mode, byte[] key, byte[] iv) throws Exception{
-        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
         //因为AES的加密块大小是128bit(16byte), 所以key是128、192、256bit无关
         //System.out.println("cipher.getBlockSize()： " + cipher.getBlockSize());
