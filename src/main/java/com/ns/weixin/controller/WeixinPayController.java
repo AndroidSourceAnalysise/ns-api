@@ -8,6 +8,8 @@
  */
 package com.ns.weixin.controller;
 
+import com.ns.common.base.BaseController;
+import com.ns.common.exception.CustException;
 import com.ns.common.json.JsonResult;
 import com.ns.common.utils.DateUtil;
 import com.ns.tld.service.TldOrdersService;
@@ -36,7 +38,7 @@ import java.util.TreeMap;
  * @version 1.0
  * @since JDK 1.8
  */
-public class WeixinPayController extends Controller {
+public class WeixinPayController extends BaseController {
 
     //商户相关资料
 
@@ -48,10 +50,15 @@ public class WeixinPayController extends Controller {
     static TldOrdersService ordersService = TldOrdersService.me;
 
     /**
-     * 公众号支付js-sdk
+     * 小程序
      */
     public void prePay() {
-        renderJson(JsonResult.newJsonResult(WeixinPayService.prePay(getPara("orderId"))));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String orderId = (String) params.get("order_id");
+        if (StrKit.isBlank(orderId)) {
+            throw new CustException("订单无效!");
+        }
+        renderJson(JsonResult.newJsonResult(WeixinPayService.prePay(orderId)));
     }
 
     /**
