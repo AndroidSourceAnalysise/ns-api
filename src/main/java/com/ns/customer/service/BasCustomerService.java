@@ -149,7 +149,7 @@ public class BasCustomerService {
     }
 
 
-    public String appletAddCustomer(String conName, String pic, int sex, String birthDay, String country, String province, String city, String unionId) {
+    public String appletAddCustomer(String conName, String pic, int sex, String birthDay, String country, String province, String city, String unionId, String openId) {
         BasCustomer customer = new BasCustomer();
         String conId = GUIDUtil.getGUID();
         customer.setID(conId);
@@ -163,6 +163,7 @@ public class BasCustomerService {
         customer.setPROVINCE(province);
         customer.setCITY(city);
         customer.setUnionId(unionId);
+        customer.setAppletOpenid(openId);
         customer.setIsSubscribe(0);
         customer.setCreateDt(DateUtil.getNow());
         customer.setUpdateDt(DateUtil.getNow());

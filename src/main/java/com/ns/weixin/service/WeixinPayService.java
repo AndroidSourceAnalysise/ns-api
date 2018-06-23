@@ -35,14 +35,14 @@ import java.util.Map;
 public class WeixinPayService {
 
     //商户相关资料
-    private static String appid = PropKit.get("appId");
+    private static String appid = PropKit.get("sappId"); // 小程序支付用小程序id，公众号用公众号id
     private static String partner = PropKit.get("partner");
     private static String paternerKey = PropKit.get("paternerKey");
     private static String notify_url = PropKit.get("notify_url");
     private static String cert_path = PropKit.get("certPath");
 
     /**
-     * 公众号支付js-sdk
+     * 小程序,公众号支付js-sdk
      */
     public static Map<String, String> prePay(String orderId) {
         // openId，采用 网页授权获取 access_token API：SnsAccessTokenApi获取
@@ -51,7 +51,7 @@ public class WeixinPayService {
             throw new CustException("订单数据异常或订单不是未付款状态!");
         }
 
-        String openId = Db.queryStr("select OPENID from bas_customer where id = ?", record.getStr("CON_ID"));
+        String openId = Db.queryStr("select APPLET_OPENID from bas_customer where id = ?", record.getStr("CON_ID"));
 
         BigDecimal totalFee = record.getBigDecimal("ORDER_TOTAL").multiply(new BigDecimal(100));
 

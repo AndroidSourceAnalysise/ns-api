@@ -261,4 +261,13 @@ public abstract class BaseBasCustomer<M extends BaseBasCustomer<M>> extends Mode
 		return getStr("UPDATE_DT");
 	}
 
+	public M setAppletOpenid(java.lang.String appletOpenid) {
+		set("APPLET_OPENID", appletOpenid);
+		return (M)this;
+	}
+	
+	public java.lang.String getAppletOpenid() {
+		return getStr("APPLET_OPENID");
+	}
+
 }

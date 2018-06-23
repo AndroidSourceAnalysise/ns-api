@@ -102,9 +102,9 @@ public class TldOrdersService {
 
 
     //{"COUNTRY":"中国","PROVINCE":"湖南省","CITY":"长沙市","DISTRICT":"岳麓区","ADDRESS":"雷锋大道","POSTAL_CODE":"412000","MOBILE":"13874133322","RECIPIENTS":"张三","FREIGHT":"0","PAYMENT_TYPEID":"0","PAYMENT_TYPE":"微信支付","ORDER_SOURCE":"1","ORDER_TYPE":"1"}
-    public Map<String, String> newOrder(String sk,JSONObject jsonObject) {
+    public Map<String, String> newOrder(String sk, JSONObject jsonObject) {
         TldOrders orders = jsonObject.toJavaObject(TldOrders.class);
-        orders.setConId((String) Redis.use().hmget(sk,RedisKeyDetail.CON_ID).get(0));
+        orders.setConId((String) Redis.use().hmget(sk, RedisKeyDetail.CON_ID).get(0));
         BigDecimal couponAmount = BigDecimal.ZERO;
         BigDecimal pointAmount = BigDecimal.ZERO;
         BasCustomer customer = basCustomerService.getCustomerByIdNotNull(orders.getConId());
@@ -129,7 +129,7 @@ public class TldOrdersService {
             PntProduct pntProduct = pntProductService.getById(pntId);
             PntSku sku = skuService.getById(skuId);
             BigDecimal amt;
-            if (StrKit.notBlank(skuId)) {
+            if (StrKit.notBlank(skuId) && !"null".equalsIgnoreCase(skuId)) {
                 // sku 库存
                 Long stock = Redis.use().getCounter(RedisKeyDetail.SKU_STOCK_ID + skuId);
                 if (stock == null || stock < quantity) {
@@ -158,7 +158,7 @@ public class TldOrdersService {
             quantitySum += quantity;
         }
         //判断是否使用优惠券
-        if (jsonObject.containsKey("COUPON_GRANT_ID")) {
+        if (jsonObject.containsKey("COUPON_GRANT_ID") && StrKit.notBlank(jsonObject.getString("COUPON_GRANT_ID"))) {
             couponAmount = computeCouponAmount(jsonObject.getString("COUPON_GRANT_ID"), pntAmountSum);
             //设置优惠券为已使用
             orders.setCouponGrantId(jsonObject.getString("COUPON_GRANT_ID"));
@@ -202,7 +202,7 @@ public class TldOrdersService {
             try {
                 packageParams = WeixinPayService.prePay(orderId);
             } catch (Exception e) {
-                e.printStackTrace();
+                throw new CustException(e.getLocalizedMessage());
             }
         } else {
             orderPay(orderId, 0);
@@ -225,7 +225,7 @@ public class TldOrdersService {
         orderItems.setUpdateDt(DateUtil.getNow());
         orderItems.setOrderId(orderId);
         orderItems.setOrderNo(orderNo);
-        orderItems.setPntId(sku != null ? sku.getProductId() : pntProduct.getID());
+        orderItems.setPntId(pntProduct.getID());
         orderItems.setPntName(pntProduct.getProductName());
         orderItems.setSkuId(sku != null ? sku.getID() : null);
         orderItems.setSkuName(sku != null ? sku.getSKU() : null);
@@ -282,13 +282,13 @@ public class TldOrdersService {
                 String skuId = str[1];
                 int quantity = Integer.valueOf(str[2]);
                 long rs;
-                if (StrKit.notBlank(skuId)) {
+                if (StrKit.notBlank(skuId) && !"null".equalsIgnoreCase(skuId)) {
                     rs = cache.decrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, Long.valueOf(quantity));
                 } else {
                     rs = cache.decrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, Long.valueOf(quantity));
                 }
                 if (rs < 0) {
-                    if (StrKit.notBlank(skuId)) {
+                    if (StrKit.notBlank(skuId) && !"null".equalsIgnoreCase(skuId)) {
                         cache.incrBy(RedisKeyDetail.SKU_STOCK_ID + skuId, Long.valueOf(quantity));
                     } else {
                         cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, Long.valueOf(quantity));
@@ -579,7 +579,7 @@ public class TldOrdersService {
         trans.save();
     }
 
-    public List<Record> getOrderList(int pageNumber, int pageSize, String conId, Integer status) {
+    public Object getOrderList(int pageNumber, int pageSize, String conId, Integer status) {
         StringBuffer sqlExceptSelect = new StringBuffer(" from tld_orders where ENABLED = 1 and status !=12 and con_id = '" + conId + "'");
         if (status != null) {
             //待收货应该包含 已打印和配送中
@@ -594,10 +594,24 @@ public class TldOrdersService {
         Page<Record> tldOrdersPage = Db.paginate(pageNumber, pageSize, "select " + COLUMN + "", sqlExceptSelect.toString());
         for (Record order : tldOrdersPage.getList()) {
             String orderId = order.get("ID");
-            List<Record> items = Db.find("select t1.*,t2.THUMB_URL from tld_order_items t1 left join pnt_sku t2 on t1.sku_id = t2.id where t1.ENABLED = 1 and t1.order_id = ?", orderId);
+            List<Record> items = Db.find("select PNT_ID,SKU_ID from tld_order_items where ORDER_ID=?", orderId);
+            for (Record item : items) {
+                final String pntId = item.getStr("PNT_ID");
+                final String skuId = item.getStr("SKU_ID");
+                if (StrKit.notBlank(skuId)) {
+//                    List<Record> items = Db.find("select t1.*,t2.THUMB_URL from tld_order_items t1 left join pnt_sku t2 on t1.sku_id = t2.id where t1.ENABLED = 1 and t1.order_id = ?", orderId);
+                    Record record = Db.findFirst("select IMAGE_URL,THUMB_URL from pnt_sku where ID=?", skuId);
+                    item.set("IMAGE_URL", record.getStr("IMAGE_URL"));
+                    item.set("THUMB_URL", record.getStr("THUMB_URL"));
+                } else {
+                    Record record = Db.findFirst("select IMAGE_URL,THUMB_URL from pnt_product where ID=?", pntId);
+                    item.set("IMAGE_URL", record.getStr("IMAGE_URL"));
+                    item.set("THUMB_URL", record.getStr("THUMB_URL"));
+                }
+            }
             order.set("ITEMS", items);
         }
-        return tldOrdersPage.getList();
+        return tldOrdersPage;
     }
 
     /**

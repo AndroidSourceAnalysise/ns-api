@@ -8,6 +8,8 @@
  */
 package com.ns.customer.controller;
 
+import com.jfinal.plugin.redis.Redis;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.customer.service.BasCustPointsService;
 import com.ns.customer.service.BasCustomerExtService;
@@ -42,28 +44,28 @@ public class BasCustomerExtController extends Controller {
     }
 
     public void getPointTransList() {
-        String conId = getPara("con_id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         int pageNumber = getParaToInt("page_number", 1);
         int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(pointsService.getPointTransList(conId, pageNumber, pageSize)));
     }
 
     public void myCustomer() {
-        String conId = getPara("con_id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         int pageNumber = getParaToInt("page_number", 1);
         int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(extService.myCustomer(pageNumber, pageSize, conId)));
     }
 
     public void myBuyCustomer() {
-        String conId = getPara("con_id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         int pageNumber = getParaToInt("page_number", 1);
         int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(extService.myBuyCustomer(pageNumber, pageSize, conId)));
     }
 
     public void myUnBuyCustomer() {
-        String conId = getPara("con_id");
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         int pageNumber = getParaToInt("page_number", 1);
         int pageSize = getParaToInt("page_size", 10);
         renderJson(JsonResult.newJsonResult(extService.myUnBuyCustomer(pageNumber, pageSize, conId)));

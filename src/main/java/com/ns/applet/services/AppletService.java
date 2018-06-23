@@ -69,7 +69,7 @@ public class AppletService {
             final String avatarUrl = (String) rs.get("avatarUrl");
             // 如果不存在就添加会员信息，存在就更新会员信息
             if (StrKit.isBlank(conId)) {
-                conId = bcs.appletAddCustomer(nickName, avatarUrl, gender, "", country, province, city, unionId);
+                conId = bcs.appletAddCustomer(nickName, avatarUrl, gender, "", country, province, city, unionId, openId);
             } else {
                 bcs.updateAppletCustomer(nickName, avatarUrl, gender, "", country, province, city, conId);
             }
