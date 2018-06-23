@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ns.common.MyConfig;
 import com.ns.common.base.BaseController;
+import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.common.model.BasCustomer;
 import com.ns.common.task.Task;
@@ -54,6 +55,10 @@ public class BasCustomerController extends BaseController {
 
     public void getById() {
         renderJson(JsonResult.newJsonResult(service.getCustomerByIdNotNull(getPara("conId"))));
+    }
+
+    public void getCustomerBaseInfo(){
+        renderJson(JsonResult.newJsonResult(service.getBaseCustomerByIdNotNull((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0))));
     }
 
 

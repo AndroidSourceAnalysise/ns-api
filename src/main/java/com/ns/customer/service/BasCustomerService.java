@@ -256,6 +256,17 @@ public class BasCustomerService {
         return customer;
     }
 
+    private static final String CUSTOMER_BASE_INFO_SQL = "select c.CON_NAME,c.PIC,c.CON_NO,c.RP_NAME,b.REVENUES,b.POINTS_ENABLED from (select t.ID,t.CON_NAME,t.PIC,t.CON_NO,t.RP_NAME from bas_customer t where t.id=?) c left join bas_customer_ext b on c.ID=b.CON_ID";
+
+
+    public Record getBaseCustomerByIdNotNull(String conId) {
+        List<Record> customer = Db.find(CUSTOMER_BASE_INFO_SQL, conId);
+        if (customer == null || customer.isEmpty()) {
+            throw new CustException("找不到会员信息");
+        }
+        return customer.get(0);
+    }
+
     public BasCustomer getCustomerByOpenIdNotNull(String openId) {
         BasCustomer customer = dao.findFirst("select " + COLUMN + " from bas_customer where openid = ? and enabled = 1", openId);
         if (customer == null) {
