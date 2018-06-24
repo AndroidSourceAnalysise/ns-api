@@ -594,7 +594,7 @@ public class TldOrdersService {
         Page<Record> tldOrdersPage = Db.paginate(pageNumber, pageSize, "select " + COLUMN + "", sqlExceptSelect.toString());
         for (Record order : tldOrdersPage.getList()) {
             String orderId = order.get("ID");
-            List<Record> items = Db.find("select PNT_ID,SKU_ID from tld_order_items where ORDER_ID=?", orderId);
+            List<Record> items = Db.find("select PNT_ID,SKU_ID,PNT_NAME,SKU_NAME,QUANTITY,SALE_PRICE,COMMENT_TAG from tld_order_items where ORDER_ID=?", orderId);
             for (Record item : items) {
                 final String pntId = item.getStr("PNT_ID");
                 final String skuId = item.getStr("SKU_ID");

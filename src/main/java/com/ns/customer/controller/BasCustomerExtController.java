@@ -28,11 +28,13 @@ public class BasCustomerExtController extends Controller {
     static BasCustPointsService pointsService = BasCustPointsService.me;
 
     public void getByConId() {
-        renderJson(JsonResult.newJsonResult(extService.getByConId(getPara("con_id"))));
+        final String conId = (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0);
+        renderJson(JsonResult.newJsonResult(extService.getByConId(conId)));
     }
 
     public void getMyPoints() {
-        renderJson(JsonResult.newJsonResult(extService.getMyPoints(getPara("con_id"))));
+        final String conId = (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0);
+        renderJson(JsonResult.newJsonResult(extService.getMyPoints(conId)));
     }
 
     public void pointsRanking() {

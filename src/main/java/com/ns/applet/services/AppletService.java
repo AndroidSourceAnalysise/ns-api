@@ -111,7 +111,12 @@ public class AppletService {
         String conId = BasCustomerService.me.isExistCustomerByUnionId(unionid);
         String sk = generateSession(sessionKey, oldSk, conId);
         response.put("sk", sk);
-        response.put("isRegistered", StrKit.notBlank(conId));
+        boolean isRegistered = StrKit.notBlank(conId);
+        // 如果会员已经注册过了，则更新会员的小程序openId
+        if (isRegistered) {
+            BasCustomerService.me.updateAppletCustomer(openId, conId);
+        }
+        response.put("isRegistered", isRegistered);
         return response;
 
 

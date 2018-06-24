@@ -42,11 +42,11 @@ public class WeixinPayController extends BaseController {
 
     //商户相关资料
 
-    private static String appid = PropKit.get("appId");
-    private static String partner = "1497125292";
-    private static String paternerKey = "F5CE0C20867EAFE9A12C0FF37998962F";
+    private static final String appid = PropKit.get("appId");
+    private static final String partner = PropKit.get("partner");
+    private static final String paternerKey = PropKit.get("paternerKey");
 
-    private static String notify_url = "http://www.xxx.com/pay/pay_notify";
+    private static final String notify_url = PropKit.get("notify_url");
     static TldOrdersService ordersService = TldOrdersService.me;
 
     /**
