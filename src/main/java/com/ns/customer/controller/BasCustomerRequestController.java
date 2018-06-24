@@ -30,8 +30,8 @@ public class BasCustomerRequestController extends BaseController {
 
     public void applyForRefund() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        String orderId = (String) params.get("orderId");
-        Integer returnReason = (Integer) params.get("returnReason");
+        String orderId = (String) params.get("order_id");
+        Integer returnReason = (Integer) params.get("return_reason");
         String pic1 = (String) params.get("pic1");
         String pic2 = (String) params.get("pic2");
         String pic3 = (String) params.get("pic3");

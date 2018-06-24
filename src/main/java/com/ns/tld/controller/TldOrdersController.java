@@ -67,7 +67,7 @@ public class TldOrdersController extends BaseController {
 
     public void getOrderItems() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        String orderId = (String) params.get("orderId");
+        String orderId = (String) params.get("order_id");
         renderJson(JsonResult.newJsonResult(ordersService.getOrderItems(orderId)));
     }
 
@@ -82,19 +82,19 @@ public class TldOrdersController extends BaseController {
     @Before(Tx.class)
     public void deleteOrder() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(ordersService.deleteOrder((String) params.get("orderId"))));
+        renderJson(JsonResult.newJsonResult(ordersService.deleteOrder((String) params.get("order_id"))));
     }
 
     @Before(Tx.class)
     public void refund() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(ordersService.refund((String) params.get("orderId"))));
+        renderJson(JsonResult.newJsonResult(ordersService.refund((String) params.get("order_id"))));
     }
 
     @Before(Tx.class)
     public void confirmOrder() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(ordersService.confirmOrder((String) params.get("orderId"))));
+        renderJson(JsonResult.newJsonResult(ordersService.confirmOrder((String) params.get("order_id"))));
     }
 
     public void getWaybill() {
@@ -104,7 +104,7 @@ public class TldOrdersController extends BaseController {
 
     public void getOrderSplit() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(ordersService.getOrderSplit((String) params.get("orderId"))));
+        renderJson(JsonResult.newJsonResult(ordersService.getOrderSplit((String) params.get("order_id"))));
     }
 
     public static void main(String[] args) {
