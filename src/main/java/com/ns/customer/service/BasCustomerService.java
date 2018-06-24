@@ -206,7 +206,7 @@ public class BasCustomerService {
             BasCustomer customer = new BasCustomer();
             customer.setID(conId);
             customer.setAppletOpenid(openId);
-            return customer.save();
+            return customer.update();
         }
         return true;
     }
