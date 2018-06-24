@@ -39,8 +39,8 @@ public class BasCustomerService {
     private static final String COLUMN = "ID,CON_NO,CON_NAME,REAL_NAME,CON_TYPE,PIC,SEX,BIRTHDAY,COUNTRY,PROVINCE,CITY,DISTRICT,ADDRESS,MOBILE,UNION_ID,OPENID," +
             "IS_LOCKOUT,RP_ID,RP_NO,RP_NAME,IS_SUBSCRIBE,ENABLED,VERSION,STATUS,REMARK,CREATE_BY,CREATE_DT,UPDATE_DT ";
     private static final String BY_UNIONID_SQL = "select t.ID from bas_customer t where UNION_ID=?";
-    private static final String BY_ID_SQL = "select t.CON_NAME,t.PIC,t.SEX,t.BIRTHDAY,t.COUNTRY,t.PROVINCE,t.CITY,t.DISTRICT,t.ADDRESS from bas_customer t where ID=?";
-    private static final String QUERY_APPLET_OPENID_BY_ID = "select t.APPLET_OPENID from bas_customer t where ID=?";
+    private static final String BY_ID_SQL = "select t.CON_NAME,t.PIC,t.SEX,t.BIRTHDAY,t.COUNTRY,t.PROVINCE,t.CITY,t.DISTRICT,t.ADDRESS from bas_customer t where t.ID=?";
+    private static final String QUERY_APPLET_OPENID_BY_ID = "select t.APPLET_OPENID from bas_customer t where t.ID=?";
 
 
     private final BasCustomer dao = new BasCustomer().dao();
@@ -204,6 +204,7 @@ public class BasCustomerService {
         Record record = Db.findFirst(QUERY_APPLET_OPENID_BY_ID, conId);
         if (StrKit.isBlank(record.getStr("APPLET_OPENID"))) {
             BasCustomer customer = new BasCustomer();
+            customer.setID(conId);
             customer.setAppletOpenid(openId);
             return customer.save();
         }
