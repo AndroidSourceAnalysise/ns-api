@@ -22,7 +22,7 @@ ossAccessKeySecret=whJm38e8rQWTH0ZyBC1skRwGPRIxRioz
 
 partner=1503864151
 paternerKey=b3af559689804e35a61b107de5e4ea9f
-#notify_url=https://m.nashengbuy.com/ns-api/api/weixin/pay/pay_notify
+notify_url=https://m.nashengbuy.com/ns-api/api/weixin/pay/pay_notify
 #http://39754bc9.ngrok.io
-notify_url=http://39754bc9.ngrok.io/ns-api/api/weixin/pay/pay_notify
+#notify_url=http://39754bc9.ngrok.io/ns-api/api/weixin/pay/pay_notify
 certPath=/usr/cert/apiclient_cert.p12
