@@ -10,14 +10,15 @@ import java.util.UUID;
 
 public class ShopCartService {
     private static final BasCustomerCart dao = BasCustomerCart.dao;
-    private static final String LIST_SQL = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected from bas_customer_cart t where t.con_id=?";
+    private static final String COLUMN = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected";
+
     private static final String SELECT_ALL_SQL = "update bas_customer_cart set is_selected=? where con_id=?";
     private static final String SELECT_SQL = "update bas_customer_cart set is_selected=? where cart_id=?";
     private static final String QUERY_SQL = "select t.cart_id,t.product_id,t.product_name,t.product_image_url,t.sku_id,t.sku_name,t.sku_image_url,t.product_num,t.product_price,t.re_product_price,t.sku_price,t.re_sku_price,t.is_selected from bas_customer_cart t where t.product_id=? and t.sku_id=? and con_id=?";
 
 
-    public static boolean add(Map<String, Object> params) {
-        Record r = Db.findFirst(QUERY_SQL, params.get("product_id"), params.get("sku_id"));
+    public static boolean add(Map<String, Object> params, String conId) {
+        Record r = Db.findFirst(QUERY_SQL, params.get("product_id"), params.get("sku_id"), conId);
         if (r == null) {
             Record record = new Record();
             params.put("cart_id", UUID.randomUUID().toString());
@@ -32,8 +33,8 @@ public class ShopCartService {
         }
     }
 
-    public static Object list(String conId) {
-        return dao.find(LIST_SQL, conId);
+    public static Object list(int start, int size, String conId) {
+        return dao.paginate(start, size, COLUMN, "from bas_customer_cart t where t.con_id=?", conId);
     }
 
     public static boolean delete(String cartId) {

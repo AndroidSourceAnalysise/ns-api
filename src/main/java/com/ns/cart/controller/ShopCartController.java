@@ -16,7 +16,8 @@ public class ShopCartController extends BaseController {
      */
     public void add() {
         Map<String, Object> params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(ShopCartService.add(params)));
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        renderJson(JsonResult.newJsonResult(ShopCartService.add(params,conId)));
     }
 
     /**
@@ -31,8 +32,11 @@ public class ShopCartController extends BaseController {
      * 购物车列表
      */
     public void list() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final int pageSize = (int) params.get("page_size");
+        final int pageNum = (int) params.get("page_num");
         String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        renderJson(JsonResult.newJsonResult(ShopCartService.list(conId)));
+        renderJson(JsonResult.newJsonResult(ShopCartService.list(pageNum, pageSize, conId)));
     }
 
 
