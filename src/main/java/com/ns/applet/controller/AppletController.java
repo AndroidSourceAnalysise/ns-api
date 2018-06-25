@@ -1,5 +1,6 @@
 package com.ns.applet.controller;
 
+import com.jfinal.plugin.redis.Redis;
 import com.ns.applet.services.AppletService;
 import com.ns.common.base.BaseController;
 import com.ns.common.json.JsonResult;
@@ -27,5 +28,20 @@ public class AppletController extends BaseController {
         final String sk = getRequest().getHeader("sk");
         final String body = Util.getRequestBytes(getRequest());
         renderJson(JsonResult.newJsonResult(AppletService.getInstance().saveCustomerInfo(sk, body)));
+    }
+
+    /**
+     * 检测会员是否绑定手机号码了
+     */
+    public void checkMobileBind() {
+        renderJson(JsonResult.newJsonResult(AppletService.getInstance().isMobileBind((String) Redis.use().hmget(getHeader("sk")).get(0))));
+    }
+
+    /**
+     * 绑定手机号码
+     */
+    public void bindMobile() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(AppletService.getInstance().bindMobilePhone((String) params.get("mobile"), (String) params.get("code"), (String) Redis.use().hmget(getHeader("sk")).get(0))));
     }
 }

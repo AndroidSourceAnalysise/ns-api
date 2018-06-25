@@ -103,8 +103,13 @@ public class TldOrdersService {
 
     //{"COUNTRY":"中国","PROVINCE":"湖南省","CITY":"长沙市","DISTRICT":"岳麓区","ADDRESS":"雷锋大道","POSTAL_CODE":"412000","MOBILE":"13874133322","RECIPIENTS":"张三","FREIGHT":"0","PAYMENT_TYPEID":"0","PAYMENT_TYPE":"微信支付","ORDER_SOURCE":"1","ORDER_TYPE":"1"}
     public Map<String, String> newOrder(String sk, JSONObject jsonObject) {
+        final String conId = (String) Redis.use().hmget(sk, RedisKeyDetail.CON_ID).get(0);
+        // 是否绑定手机号码
+        if (!BasCustomerService.me.isMobileBind(conId)) {
+            throw new CustException(404, "请绑定手机号码!");
+        }
         TldOrders orders = jsonObject.toJavaObject(TldOrders.class);
-        orders.setConId((String) Redis.use().hmget(sk, RedisKeyDetail.CON_ID).get(0));
+        orders.setConId(conId);
         BigDecimal couponAmount = BigDecimal.ZERO;
         BigDecimal pointAmount = BigDecimal.ZERO;
         BasCustomer customer = basCustomerService.getCustomerByIdNotNull(orders.getConId());

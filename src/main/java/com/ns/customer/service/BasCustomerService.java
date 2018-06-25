@@ -41,6 +41,12 @@ public class BasCustomerService {
     private static final String BY_UNIONID_SQL = "select t.ID from bas_customer t where UNION_ID=?";
     private static final String BY_ID_SQL = "select t.CON_NAME,t.PIC,t.SEX,t.BIRTHDAY,t.COUNTRY,t.PROVINCE,t.CITY,t.DISTRICT,t.ADDRESS from bas_customer t where t.ID=?";
     private static final String QUERY_APPLET_OPENID_BY_ID = "select t.APPLET_OPENID from bas_customer t where t.ID=?";
+    private static final String QUERY_MOBILE_BIND_SQL = "select t.mobile from bas_customer t where t.ID=?";
+
+
+    public boolean isMobileBind(String conId) {
+        return StrKit.notBlank(Db.findFirst(QUERY_MOBILE_BIND_SQL, conId).getStr("mobile"));
+    }
 
 
     private final BasCustomer dao = new BasCustomer().dao();

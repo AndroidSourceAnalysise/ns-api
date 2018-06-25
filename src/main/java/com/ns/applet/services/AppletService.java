@@ -137,4 +137,12 @@ public class AppletService {
         String result = cache.hmset(sk, rm);
         return sk;
     }
+
+    public boolean isMobileBind(String conId) {
+        return BasCustomerService.me.isMobileBind(conId);
+    }
+
+    public boolean bindMobilePhone(String mobile, String code, String conId) {
+        return BasCustomerService.me.bindMobile(mobile,conId,code);
+    }
 }
