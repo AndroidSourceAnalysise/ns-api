@@ -13,6 +13,7 @@ import com.ns.common.exception.CustException;
 import com.ns.common.model.BasCustomer;
 import com.ns.common.utils.DateUtil;
 import com.ns.common.utils.GUIDUtil;
+import com.ns.sys.service.SysDictService;
 import com.ns.tld.service.TldIdentifyCodeService;
 import com.ns.weixin.service.NoticeService;
 import com.jfinal.kit.StrKit;
@@ -24,7 +25,9 @@ import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.CustomServiceApi;
 import com.jfinal.weixin.sdk.api.UserApi;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * description: //TODO <br>
@@ -42,7 +45,65 @@ public class BasCustomerService {
     private static final String BY_ID_SQL = "select t.CON_NAME,t.PIC,t.SEX,t.BIRTHDAY,t.COUNTRY,t.PROVINCE,t.CITY,t.DISTRICT,t.ADDRESS from bas_customer t where t.ID=?";
     private static final String QUERY_APPLET_OPENID_BY_ID = "select t.APPLET_OPENID from bas_customer t where t.ID=?";
     private static final String QUERY_MOBILE_BIND_SQL = "select t.mobile from bas_customer t where t.ID=?";
+    private static final String QUERY_REFEREE_SQL = "select t.RP_ID from bas_customer t where t.ID=?";
+    private static final String QUERY_REFEREE_COUNT_SQL = "select count(*) from bas_customer t where t.RP_ID=?";
+    private static final String QUERY_MEMBER_SQL = "select t.ORDERS_TOTAL from bas_customer_ext t where t.ID=?";
+    private static final String UPDATE_REFEREE_SQL = "update bas_customer t set t.RP_ID=?,t.RP_NO,t.RP_NAME where t.ID=?";
 
+
+    /**
+     * 检测推荐人
+     */
+    public boolean checkReferee(String conId) {
+        // 1. 上级为空 2. 未购买 3. 没有下级
+        Record record = Db.findFirst(QUERY_REFEREE_SQL, conId);
+        if (record != null) {
+            throw new CustException(100, "您已经有推荐人了!");
+        }
+        int count = Db.queryInt(QUERY_MEMBER_SQL, conId);
+        if (count > 0) {
+            throw new CustException(101, "您已经购买了产品!");
+        }
+        count = Db.queryInt(QUERY_REFEREE_COUNT_SQL, conId);
+        if (count > 0) {
+            throw new CustException(102, "您已经有会员!");
+        }
+        return true;
+    }
+
+    /**
+     * 更新推荐人
+     */
+    public boolean updateReferee(String conId, String refereeNo) {
+        checkReferee(conId);
+        BasCustomer basCustomer = getCustomerByConNo(refereeNo);
+        if (basCustomer.getConType() == 0) {
+            throw new CustException(103, "会员" + refereeNo + "还没有购买过产品哦!");
+        }
+        return Db.update(UPDATE_REFEREE_SQL, basCustomer.getID(), refereeNo, basCustomer.getConName(), conId) > 0;
+    }
+
+    /**
+     * 获取推荐人基础信息
+     */
+    public Object getRefereeBaseInfo(String refereeNo) {
+        BasCustomer basCustomer = getCustomerByConNo(refereeNo);
+        Map rs = new HashMap();
+        rs.put("avatar", basCustomer.getPIC());
+        rs.put("con_name", basCustomer.getConName());
+        return rs;
+    }
+
+    /**
+     * 自动推荐人
+     */
+    public boolean autoReferee(String conId) {
+        String sysRefereeNo = SysDictService.me.getByParamKey("auto_referee_no");
+        if (StrKit.isBlank(sysRefereeNo)) {
+            sysRefereeNo = "1";
+        }
+        return updateReferee(conId, sysRefereeNo);
+    }
 
     public boolean isMobileBind(String conId) {
         return StrKit.notBlank(Db.findFirst(QUERY_MOBILE_BIND_SQL, conId).getStr("mobile"));

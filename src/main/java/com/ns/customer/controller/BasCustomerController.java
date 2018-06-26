@@ -13,6 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.ns.common.MyConfig;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
+import com.ns.common.exception.CustException;
 import com.ns.common.json.JsonResult;
 import com.ns.common.model.BasCustomer;
 import com.ns.common.task.Task;
@@ -32,6 +33,7 @@ import com.jfinal.weixin.sdk.api.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -46,6 +48,33 @@ import java.util.UUID;
 public class BasCustomerController extends BaseController {
     static BasCustomerService service = new BasCustomerService();
 
+    public void checkReferee() {
+        renderJson(BasCustomerService.me.checkReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0)));
+    }
+
+    public void updateReferee() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String refereeNo = (String) params.get("referee_no");
+        if (StrKit.isBlank(refereeNo)) {
+            throw new CustException("推荐人会员不能为空!");
+        }
+        renderJson(BasCustomerService.me.updateReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), refereeNo));
+    }
+
+
+    public void getRefereeBaseInfo() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String refereeNo = (String) params.get("referee_no");
+        if (StrKit.isBlank(refereeNo)) {
+            throw new CustException("推荐人会员不能为空!");
+        }
+        renderJson(BasCustomerService.me.getRefereeBaseInfo(refereeNo));
+    }
+
+    public void autoReferee() {
+        renderJson(BasCustomerService.me.autoReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0)));
+    }
+
     public void test() {
         //oCMeO0qn2r-PEEuLFsNdWoebMq_g
         ApiConfigKit.putApiConfig(MyConfig.getApiConfig());
@@ -57,14 +86,14 @@ public class BasCustomerController extends BaseController {
         renderJson(JsonResult.newJsonResult(service.getCustomerByIdNotNull(getPara("conId"))));
     }
 
-    public void getCustomerBaseInfo(){
+    public void getCustomerBaseInfo() {
         renderJson(JsonResult.newJsonResult(service.getBaseCustomerByIdNotNull((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0))));
     }
 
 
     public void getByConNo() {
         renderJson(JsonResult.newJsonResult(service.getCustomerByConNoNotNull(getPara("conNo"))));
-}
+    }
 
     public void update() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);

@@ -44,6 +44,45 @@ public class TldOrdersController extends BaseController {
         renderJson(JsonResult.newJsonResult(ordersService.newOrder(getHeader("sk"), jsonObject)));
     }
 
+    /**
+     * 检测推荐人
+     */
+    public void checkReferee() {
+
+    }
+
+    /**
+     * 更新推荐人
+     */
+    public void updateRefree() {
+
+    }
+
+    /**
+     * 获取推荐人基础信息
+     */
+    public void getRefreeBaseInfo() {
+
+    }
+
+    /**
+     * 自动推荐人
+     */
+    public void autoReferee() {
+
+    }
+
+
+    /**
+     * 获取运费
+     */
+    public void getFreight() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String province = (String) params.get("province");
+        final int num = (int) params.get("num");
+        renderJson(JsonResult.newJsonResult(TldOrdersService.me.computeFreight(province, num)));
+    }
+
     public void getOrderList() {
         Map params = getRequestObject(getRequest(), HashMap.class);
         int pageNumber = (int) params.get("page_number");
