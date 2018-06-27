@@ -83,7 +83,7 @@ public class BasCustomerController extends BaseController {
     }
 
     public void getById() {
-        renderJson(JsonResult.newJsonResult(service.getCustomerByIdNotNull(getPara("conId"))));
+        renderJson(JsonResult.newJsonResult(service.getCustomerByIdNotNull((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0))));
     }
 
     public void getCustomerBaseInfo() {
@@ -104,9 +104,8 @@ public class BasCustomerController extends BaseController {
     @Before(Tx.class)
     public void bindMobile() {
         String mobile = getPara("mobile");
-        String conId = getPara("conId");
         String code = getPara("code");
-        renderJson(JsonResult.newJsonResult(service.bindMobile(mobile, conId, code)));
+        renderJson(JsonResult.newJsonResult(service.bindMobile(mobile, (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), code)));
 
     }
 
