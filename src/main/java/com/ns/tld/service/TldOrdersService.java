@@ -8,12 +8,32 @@
  */
 package com.ns.tld.service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cedarsoftware.util.io.JsonObject;
+import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
+import com.jfinal.plugin.redis.Redis;
 import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.exception.CustException;
-import com.ns.common.model.*;
+import com.ns.common.model.BasCustPointTrans;
+import com.ns.common.model.BasCustomer;
+import com.ns.common.model.BasCustomerExt;
+import com.ns.common.model.PntProduct;
+import com.ns.common.model.PntSku;
+import com.ns.common.model.TldCouponGrant;
+import com.ns.common.model.TldOrderItems;
+import com.ns.common.model.TldOrderSplit;
+import com.ns.common.model.TldOrders;
+import com.ns.common.model.TldTwitter;
 import com.ns.common.utils.DateUtil;
 import com.ns.common.utils.GUIDUtil;
 import com.ns.customer.service.BasCustPointsService;
@@ -24,18 +44,8 @@ import com.ns.pnt.service.PntSkuService;
 import com.ns.sys.service.SysDictService;
 import com.ns.weixin.service.NoticeService;
 import com.ns.weixin.service.WeixinPayService;
-import com.jfinal.kit.StrKit;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Page;
-import com.jfinal.plugin.activerecord.Record;
-import com.jfinal.plugin.redis.Cache;
-import com.jfinal.plugin.redis.Redis;
-import com.jfinal.weixin.sdk.api.PaymentApi;
-import redis.clients.jedis.Jedis;
 
-import java.math.BigDecimal;
-import java.security.Guard;
-import java.util.*;
+import redis.clients.jedis.Jedis;
 
 /**
  * description: //TODO <br>
@@ -55,6 +65,8 @@ public class TldOrdersService {
     static TldCouponGrantService couponService = TldCouponGrantService.me;
     static BasCustPointsService pointsService = BasCustPointsService.me;
     static BasCustomerExtService extService = BasCustomerExtService.me;
+    static TldTwitterService twitterService = TldTwitterService.me;
+    static TldRebateFlowService flowService = TldRebateFlowService.me;
     static NoticeService noticeService = NoticeService.me;
     private final String COLUMN = "ID,ORDER_NO,CON_ID,CON_NO,CON_NAME,PIC,PAY_DT,SHIPPING_DT,CONFIRM_DT,COUNTRY,PROVINCE,CITY,DISTRICT,ADDRESS,POSTAL_CODE,MOBILE,RECIPIENTS,FREIGHT,WEIGHT,PAYMENT_TYPEID,PAYMENT_TYPE,ORDER_SOURCE,ORDER_TYPE,ORDER_TOTAL,COUPON_AMOUNT,INTEGRAL_AMOUNT,PNT_AMOUNT,IS_DISCOUNT,IS_REORDER,SELF_INTEGRAL,UP1_INTEGRAL,RP_ID,RP_NO,RP_NAME,ENABLED,VERSION," +
             "STATUS,REMARK,CREATE_BY,CREATE_DT,UPDATE_DT ";
@@ -476,6 +488,11 @@ public class TldOrdersService {
                 String opneId = Db.queryStr("select OPENID from bas_customer where ID = ?", customer.getRpId());
                 noticeService.getRpPointsNotice(customer.getRpId(), opneId, customer.getRpName(), customer.getConNo(), orders.getPayDt(), String.valueOf(up1Integral + subscribePointsUp1), String.valueOf(up1Ext.getPointsTotal()));
             }
+            
+            //新增.返利模块.
+            TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(),orders.getRpNo());
+            twitterService.addPayDirect(t, selfExt, orders);//直推增加待确认订单
+            twitterService.addPayNormal(t, selfExt, orders, BigDecimal.valueOf(0));//间接推增加待确认订单
         }
 
     }
@@ -747,6 +764,13 @@ public class TldOrdersService {
         } finally {
             cache.close();
         }
+        
+        //新增.返利模块.撤单.
+        TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(),orders.getRpNo());
+        twitterService.disabledDirectOrder(t, orders);//直推完成订单
+        twitterService.disabledNormalOrder(t, orders);//间接推完成订单
+    
+        
         return true;
     }
 
@@ -833,6 +857,12 @@ public class TldOrdersService {
             }
             String opneId = Db.queryStr("select OPENID from bas_customer where ID = ?", orders.getConId());
             noticeService.sendOrderReceivedNotice(orders.getConId(), opneId, orders.getOrderNo(), orders.getConfirmDt(), String.valueOf(orders.getOrderTotal()));
+        
+            //新增.返利模块.
+            TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(),orders.getRpNo());
+            twitterService.confirmDirectOrder(t, selfExt, orders);//直推完成订单
+            twitterService.confirmNormalOrder(t, orders);//间接推完成订单
+        
         } else {
             throw new CustException("未出库订单不能确认收货");
         }

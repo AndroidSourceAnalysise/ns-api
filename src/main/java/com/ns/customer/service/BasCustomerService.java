@@ -447,4 +447,23 @@ public class BasCustomerService {
             record.getStr("RP_ID").equals(conId);
         }
     }
+
+    /*
+     * 递归上级找到最近的上级.
+     * 
+     ***/
+	public String findUpTwitterNo(String rpNo) {
+	    BasCustomer c = this.getCustomerByConNo(rpNo);
+	    while(null != c && !"sys".equals(c.getRpNo())){
+	    	if(c.getConType()==1){
+	    		return c.getConNo();
+	    	}
+	    	String rp = c.getRpNo();
+	    	if(StrKit.isBlank(rp)){
+	    		return null;
+	    	}
+	    	c = this.getCustomerByConNo(rp);
+	    }
+		return null;
+	}
 }

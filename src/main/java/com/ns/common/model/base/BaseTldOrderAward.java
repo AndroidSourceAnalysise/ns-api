@@ -13,6 +13,7 @@ public abstract class BaseTldOrderAward<M extends BaseTldOrderAward<M>> extends 
 		set("id", id);
 		return (M)this;
 	}
+	
 	public java.lang.String getId() {
 		return getStr("id");
 	}
