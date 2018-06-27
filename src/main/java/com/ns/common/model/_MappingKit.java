@@ -53,7 +53,9 @@ public class _MappingKit {
 		arp.addMapping("tld_photos", "ID", TldPhotos.class);
 		arp.addMapping("tld_pnt_params", "id", TldPntParams.class);
 		arp.addMapping("tld_qrbgm_params", "ID", TldQrbgmParams.class);
+		arp.addMapping("tld_rebate_flow", "id", TldRebateFlow.class);
 		arp.addMapping("tld_site_msg", "ID", TldSiteMsg.class);
+		arp.addMapping("tld_twitter", "id", TldTwitter.class);
 		arp.addMapping("tld_withdraw", "id", TldWithdraw.class);
 		arp.addMapping("tld_withdraw_item", "id", TldWithdrawItem.class);
 		arp.addMapping("treenodes", "id", Treenodes.class);
