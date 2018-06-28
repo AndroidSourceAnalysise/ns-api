@@ -18,6 +18,7 @@ import com.ns.common.model.TldTwitter;
 import com.ns.common.utils.DateUtil;
 import com.ns.common.utils.GUIDUtil;
 import com.ns.customer.service.BasCustomerService;
+import com.ns.pnt.service.PntProductService;
 
 /**
  * @author qgn twitter 相关.
@@ -28,6 +29,7 @@ public class TldTwitterService {
 	static TldParamsService paramsService = TldParamsService.me;
 	static BasCustomerService basCustomerService = BasCustomerService.me;
 	static TldPntParamsSerivce tldPntParamsService = TldPntParamsSerivce.me;
+	static PntProductService pntProductService = PntProductService.me;
 	static TldOrderItemsSerivce tldOrderItemsSerivce = TldOrderItemsSerivce.me;
 	static TldRebateFlowService tldRebateFlowService = TldRebateFlowService.me;
 	private final String COLUMN = "id,post_no,con_id,con_no,con_name,mobile, enable,version, status,remark, memo,min_date, year,month,  day, percent, is_first_month, up_no,up_name,rebate_up_no,rebate_up_name,referee_id,referee_name, month_sale,unconfirm_direct_push,unconfirm_con_total,   confirmed_direct_push, confirmed_con_total,unconfirm_promotion_order,confirmed_promotion_order,  unconfirm_promotion_fee,confirmed_promotion_fee,unconfirm_order,confirmed_order,unconfirm_scale,confirmed_scale,request_amount,requested_total,reserve_available,balance_amount,create_by,create_dt,update_dt";
@@ -174,8 +176,7 @@ public class TldTwitterService {
 				rate = pnt.getRepercent();
 			}
 			int quanlity = m.get(pnt.getProductId());
-			// TODO.价格在哪里
-			BigDecimal price = null;
+			BigDecimal price = pntProductService.getById(pnt.getProductId()).getSalPrice();
 			BigDecimal fee = rate.multiply(new BigDecimal(quanlity)).multiply(price);
 			totalFee = totalFee.add(fee);
 		}
