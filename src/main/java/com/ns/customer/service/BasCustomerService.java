@@ -24,6 +24,7 @@ import com.jfinal.plugin.redis.Redis;
 import com.jfinal.weixin.sdk.api.ApiResult;
 import com.jfinal.weixin.sdk.api.CustomServiceApi;
 import com.jfinal.weixin.sdk.api.UserApi;
+import org.apache.http.util.TextUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,7 +58,7 @@ public class BasCustomerService {
     public boolean checkReferee(String conId) {
         // 1. 上级为空 2. 未购买 3. 没有下级
         Record record = Db.findFirst(QUERY_REFEREE_SQL, conId);
-        if (record != null) {
+        if (record.getStr("RP_ID") != null) {
             throw new CustException(100, "您已经有推荐人了!");
         }
         int count = Db.queryInt(QUERY_MEMBER_SQL, conId);
@@ -77,8 +78,14 @@ public class BasCustomerService {
     public boolean updateReferee(String conId, String refereeNo) {
         checkReferee(conId);
         BasCustomer basCustomer = getCustomerByConNo(refereeNo);
+        if (basCustomer == null) {
+            throw new CustException(103, "会员" + refereeNo + "不存在");
+        }
+        if (conId.equalsIgnoreCase(basCustomer.getID())) {
+            throw new CustException(104, "推荐人不能是自己!");
+        }
         if (basCustomer.getConType() == 0) {
-            throw new CustException(103, "会员" + refereeNo + "还没有购买过产品哦!");
+            throw new CustException(105, "会员" + refereeNo + "还没有购买过产品哦!");
         }
         return Db.update(UPDATE_REFEREE_SQL, basCustomer.getID(), refereeNo, basCustomer.getConName(), conId) > 0;
     }
@@ -88,6 +95,9 @@ public class BasCustomerService {
      */
     public Object getRefereeBaseInfo(String refereeNo) {
         BasCustomer basCustomer = getCustomerByConNo(refereeNo);
+        if (basCustomer == null) {
+            throw new CustException("会员" + refereeNo + "不存在");
+        }
         Map rs = new HashMap();
         rs.put("avatar", basCustomer.getPIC());
         rs.put("con_name", basCustomer.getConName());
