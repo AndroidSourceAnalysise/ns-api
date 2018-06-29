@@ -22,6 +22,7 @@ public class ShopCartService {
         if (r == null) {
             Record record = new Record();
             params.put("cart_id", UUID.randomUUID().toString());
+            params.put("con_id", conId);
             params.put("creator", "ns");
             params.put("create_time", DateUtil.getNow());
             params.put("update_time", DateUtil.getNow());
@@ -45,15 +46,15 @@ public class ShopCartService {
         Record record = new Record();
         params.put("update_time", DateUtil.getNow());
         record.setColumns(params);
-        return Db.update("bas_customer_cart", record);
+        return Db.update("bas_customer_cart","cart_id",record);
     }
 
     public static boolean selectAll(int allSelect, String conId) {
         return Db.update(SELECT_ALL_SQL, allSelect, conId) > 0;
     }
 
-    public static boolean select(int isSelect, String conId) {
-        return Db.update(SELECT_SQL, isSelect, conId) > 0;
+    public static boolean select(int isSelect, String cartId) {
+        return Db.update(SELECT_SQL, isSelect, cartId) > 0;
     }
 
 }

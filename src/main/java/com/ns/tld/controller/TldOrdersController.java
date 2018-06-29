@@ -18,13 +18,9 @@ import com.ns.common.utils.Util;
 import com.ns.tld.service.TldOrdersService;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.HttpKit;
-import com.jfinal.plugin.activerecord.Db;
-import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.activerecord.tx.Tx;
-import sun.misc.Cache;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,33 +40,6 @@ public class TldOrdersController extends BaseController {
         renderJson(JsonResult.newJsonResult(ordersService.newOrder(getHeader("sk"), jsonObject)));
     }
 
-    /**
-     * 检测推荐人
-     */
-    public void checkReferee() {
-
-    }
-
-    /**
-     * 更新推荐人
-     */
-    public void updateRefree() {
-
-    }
-
-    /**
-     * 获取推荐人基础信息
-     */
-    public void getRefreeBaseInfo() {
-
-    }
-
-    /**
-     * 自动推荐人
-     */
-    public void autoReferee() {
-
-    }
 
 
     /**
