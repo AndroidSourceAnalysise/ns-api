@@ -18,6 +18,7 @@ import com.ns.customer.service.BasCustomerService;
 import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Record;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -56,12 +57,32 @@ public class TldCouponService {
         return dao.findFirst("select " + COLUMN + " from tld_coupon where id = ?", id);
     }
 
+    private void filter(List<Record> list, String conId) {
+        Iterator<Record> iterable = list.iterator();
+        while (iterable.hasNext()) {
+            Record record = iterable.next();
+            final int remainNum = record.getInt("REMAIN_NUMBER");
+            if (remainNum <= 0) {
+                iterable.remove();
+            } else {
+                final String startTime = record.getStr("START_DT");
+                final String endTime = record.getStr("END_DT");
+                String dateTime = DateUtil.getNow(DateUtil.DEFAULT_DATE_TIME_RFGFX);
+                if (!DateUtil.isTween(dateTime, startTime, endTime, DateUtil.DEFAULT_DATE_TIME_RFGFX)) {
+                    iterable.remove();
+                } else {
+                    TldCouponGrant tldCouponGrant = tldCouponGrantService.getByIdAndConId(record.getStr("ID"), conId);
+                    if (tldCouponGrant != null) {
+                        iterable.remove();
+                    }
+                }
+            }
+        }
+    }
+
     public List<Record> getTldCouponList(String conId) {
         List<Record> couponList = Db.find("select " + COLUMN + " from tld_coupon where STATUS = 1 and ENABLED = 1");
-        for (Record coupon : couponList) {
-            TldCouponGrant tldCouponGrant = tldCouponGrantService.getByIdAndConId(coupon.getStr("ID"), conId);
-            coupon.set("IS_RECEIVE", tldCouponGrant != null);
-        }
+        filter(couponList, conId);
         return couponList;
     }
 

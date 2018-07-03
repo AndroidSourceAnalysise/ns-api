@@ -8,6 +8,7 @@
  */
 package com.ns.tld.controller;
 
+import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.redis.Redis;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
@@ -19,6 +20,9 @@ import com.ns.tld.service.TldCouponGrantService;
 import com.ns.tld.service.TldCouponService;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.tx.Tx;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * description: //TODO <br>
@@ -34,13 +38,20 @@ public class TldCouponController extends BaseController {
 
     public void getTldCouponList() {
         final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        renderJson(JsonResult.newJsonResult(tldCouponService.getTldCouponList(conId)));
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final int status = (int) params.get("status");
+        if (status == 3) {
+            renderJson(JsonResult.newJsonResult(tldCouponService.getTldCouponList(conId)));
+        } else {
+            renderJson(JsonResult.newJsonResult(tldCouponGrantService.getCoupon(status, conId)));
+        }
     }
 
     @Before({Tx.class})
     public void receiveCoupon() {
         final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        String couponId = getPara("coupon_id");
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String couponId = (String) params.get("coupon_id");
         tldCouponService.receiveCoupon(conId, couponId);
         renderJson(JsonResult.newJsonResult(true));
     }

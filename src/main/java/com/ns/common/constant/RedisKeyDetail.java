@@ -47,35 +47,35 @@ public interface RedisKeyDetail {
     /**
      * 积分折扣率(百分制%)
      */
-    String POINTS_DISCOUNT_RATE = "POINTS_DISCOUNT_RATE";
+    String POINTS_DISCOUNT_RATE = "points_discount_rate";
     /**
      * 关注成新会员上级获得积分
      */
-    String SUBSCRIBE_POINTS_UP1 = "SUBSCRIBE_POINTS_UP1";
+    String SUBSCRIBE_POINTS_UP1 = "subscribe_points_up1";
     /**
      * 关注成新会员自己获得积分
      */
-    String SUBSCRIBE_POINTS_SELF = "SUBSCRIBE_POINTS_SELF";
+    String SUBSCRIBE_POINTS_SELF = "subscribe_points_self";
     /**
      * 重复消费折扣(百分制%)
      */
-    String RE_CONSUME_RATE = "RE_CONSUME_RATE";
+    String RE_CONSUME_RATE = "re_consume_rate";
     /**
      * 积分排行榜排名条数
      */
-    String POINT_STATISTICS_NUM = "POINT_STATISTICS_NUM";
+    String POINT_STATISTICS_NUM = "point_statistics_num";
     /**
      * 运费配置
      */
-    String EXP_BASE_FEE = "EXP_BASE_FEE";
+    String EXP_BASE_FEE = "exp_base_fee";
     /**
      * 验证码有效期 分钟
      */
-    String VALID_TIME = "VALID_TIME";
+    String VALID_TIME = "valid_time";
 
     String SESSION = "SESSION";
 
-    String SESSION_KEY = "SESSION_KEY";
+    String SESSION_KEY = "session_key";
 
-    String CON_ID = "CON_ID";
+    String CON_ID = "con_id";
 }

@@ -62,6 +62,11 @@ public class TldCouponGrantService {
         return pastDue(grantsList, true);
     }
 
+    public List<TldCouponGrant> getCoupon(int status,String conId) {
+        List<TldCouponGrant> grantsList = dao.find("select " + COLUMN + " from tld_coupon_grant where enabled = 1 and status = ? and con_Id = ? ORDER BY UPDATE_DT desc", status,conId);
+        return grantsList;
+    }
+
     /**
      * 过期
      *

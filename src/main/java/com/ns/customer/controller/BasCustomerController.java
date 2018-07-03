@@ -10,6 +10,7 @@ package com.ns.customer.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ns.applet.services.AppletService;
 import com.ns.common.MyConfig;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
@@ -101,12 +102,20 @@ public class BasCustomerController extends BaseController {
         renderJson(JsonResult.newJsonResult(service.update(customer, jsonObject.getString("CODE"))));
     }
 
-    @Before(Tx.class)
-    public void bindMobile() {
-        String mobile = getPara("mobile");
-        String code = getPara("code");
-        renderJson(JsonResult.newJsonResult(service.bindMobile(mobile, (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), code)));
 
+    /**
+     * 检测会员是否绑定手机号码了
+     */
+    public void checkMobileBind() {
+        renderJson(JsonResult.newJsonResult(service.isMobileBind((String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0))));
+    }
+
+    /**
+     * 绑定手机号码
+     */
+    public void bindMobile() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(service.bindMobile((String) params.get("mobile"), (String) params.get("code"), (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0))));
     }
 
     public void getByOpenId() {
@@ -158,4 +167,6 @@ public class BasCustomerController extends BaseController {
         System.out.println(GUIDUtil.getGUID());
         System.out.println(GUIDUtil.getGUID());
     }
+
+
 }

@@ -69,7 +69,7 @@ public class BasCustomerExtService {
 
     public Map<String, Object> getMyPoints(String conId) {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("POINTS_ENABLED", Db.findFirst("SELECT POINTS_TOTAL,POINTS_ENABLED FROM BAS_CUSTOMER_EXT  WHERE ENABLED = 1 AND CON_ID = ? ", conId));
+        resultMap.put("POINTS_ENABLED", Db.findFirst("SELECT POINTS_TOTAL,POINTS_ENABLED FROM bas_customer_ext  WHERE ENABLED = 1 AND CON_ID = ? ", conId));
         //resultMap.put("POINTTRANS", basCustPointsService.getPointTransList(conId, 1, 5));
         // 积分抵扣比例 例如100 也就是1积分抵扣1块钱
         //resultMap.put("POINT_CREDIT", SysDictService.me.getByParamKey("points_discount_rate"));
@@ -82,21 +82,21 @@ public class BasCustomerExtService {
         if (StrKit.notBlank(pointStatisticsNum)) {
             num = Integer.valueOf(pointStatisticsNum);
         }
-        return Db.find("SELECT T.ID,T.PIC,T.CON_NAME,T.CON_NO,T2.POINTS_CFMD FROM BAS_CUSTOMER T INNER JOIN BAS_CUSTOMER_EXT T2 ON T.ID = T2.CON_ID ORDER BY T2.POINTS_CFMD DESC LIMIT " + num);
+        return Db.find("SELECT T.ID,T.PIC,T.CON_NAME,T.CON_NO,T2.POINTS_CFMD FROM bas_customer T INNER JOIN BAS_CUSTOMER_EXT T2 ON T.ID = T2.CON_ID ORDER BY T2.POINTS_CFMD DESC LIMIT " + num);
     }
 
     public Page<Record> myCustomer(int pageNumber, int pageSize, String conId) {
         String select = "SELECT  T1.ID,T1.CON_NO,T1.CON_NAME,T1.PIC,T1.CON_TYPE,T1.CREATE_DT AS REGISTER_DT,T2.ORDER_TOTAL,T2.UP1_INTEGRAL,T2.CREATE_DT AS ORDER_DT,T2.ID AS ORDER_ID ";
-        String sqlExceptSelect = "FROM BAS_CUSTOMER T1 LEFT JOIN TLD_ORDERS T2 ON T1.ID = T2.CON_ID AND T2.STATUS = 7 WHERE T1.RP_ID = ? order by T1.CREATE_DT desc";
+        String sqlExceptSelect = "FROM bas_customer T1 LEFT JOIN TLD_ORDERS T2 ON T1.ID = T2.CON_ID AND T2.STATUS = 7 WHERE T1.RP_ID = ? order by T1.CREATE_DT desc";
         return Db.paginate(pageNumber, pageSize, select, sqlExceptSelect, conId);
     }
 
     public Page<Record> myBuyCustomer(int pageNumber, int pageSize, String conId) {
         //return Db.paginate(pageNumber, pageSize, "SELECT CON_ID,CON_NO,CON_NAME,PIC,CREATE_DT AS ORDER_DT,UP1_INTEGRAL,ORDER_TOTAL ", " FROM TLD_ORDERS WHERE STATUS = 7 AND RP_ID = ? GROUP BY CON_ID ORDER BY UPDATE_DT ", conId);
-        return Db.paginate(pageNumber, pageSize, "SELECT ID,CON_NO,CON_NAME,PIC,CREATE_DT AS REGISTER_DT ", " FROM BAS_CUSTOMER WHERE CON_TYPE = 1 AND RP_ID = ? ORDER BY CREATE_DT desc", conId);
+        return Db.paginate(pageNumber, pageSize, "SELECT ID,CON_NO,CON_NAME,PIC,CREATE_DT AS REGISTER_DT ", " FROM bas_customer WHERE CON_TYPE = 1 AND RP_ID = ? ORDER BY CREATE_DT desc", conId);
     }
 
     public Page<Record> myUnBuyCustomer(int pageNumber, int pageSize, String conId) {
-        return Db.paginate(pageNumber, pageSize, "SELECT ID,CON_NO,CON_NAME,PIC,CREATE_DT AS REGISTER_DT ", " FROM BAS_CUSTOMER WHERE CON_TYPE = 0 AND RP_ID = ? ORDER BY CREATE_DT desc", conId);
+        return Db.paginate(pageNumber, pageSize, "SELECT ID,CON_NO,CON_NAME,PIC,CREATE_DT AS REGISTER_DT ", " FROM bas_customer WHERE CON_TYPE = 0 AND RP_ID = ? ORDER BY CREATE_DT desc", conId);
     }
 }
