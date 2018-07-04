@@ -48,7 +48,7 @@ public class BasCustomerService {
     private static final String QUERY_MOBILE_BIND_SQL = "select t.mobile from bas_customer t where t.ID=?";
     private static final String QUERY_REFEREE_SQL = "select t.RP_ID from bas_customer t where t.ID=?";
     private static final String QUERY_REFEREE_COUNT_SQL = "select count(*) from bas_customer t where t.RP_ID=?";
-    private static final String QUERY_MEMBER_SQL = "select t.ORDERS_TOTAL from bas_customer_ext t where t.ID=?";
+    private static final String QUERY_MEMBER_SQL = "select t.ORDERS_TOTAL from bas_customer_ext t where t.CON_ID=?";
     private static final String UPDATE_REFEREE_SQL = "update bas_customer t set t.RP_ID=?,t.RP_NO,t.RP_NAME where t.ID=?";
 
 
@@ -58,7 +58,7 @@ public class BasCustomerService {
     public boolean checkReferee(String conId) {
         // 1. 上级为空 2. 未购买 3. 没有下级
         Record record = Db.findFirst(QUERY_REFEREE_SQL, conId);
-        if (record.getStr("RP_ID") != null) {
+        if (StrKit.notBlank(record.getStr("RP_ID"))) {
             throw new CustException(100, "您已经有推荐人了!");
         }
         int count = Db.queryInt(QUERY_MEMBER_SQL, conId);
@@ -460,20 +460,20 @@ public class BasCustomerService {
 
     /*
      * 递归上级找到最近的上级.
-     * 
+     *
      ***/
-	public String findUpTwitterNo(String rpNo) {
-	    BasCustomer c = this.getCustomerByConNo(rpNo);
-	    while(null != c && !"sys".equals(c.getRpNo())){
-	    	if(c.getConType()==1){
-	    		return c.getConNo();
-	    	}
-	    	String rp = c.getRpNo();
-	    	if(StrKit.isBlank(rp)){
-	    		return null;
-	    	}
-	    	c = this.getCustomerByConNo(rp);
-	    }
-		return null;
-	}
+    public String findUpTwitterNo(String rpNo) {
+        BasCustomer c = this.getCustomerByConNo(rpNo);
+        while (null != c && !"sys".equals(c.getRpNo())) {
+            if (c.getConType() == 1) {
+                return c.getConNo();
+            }
+            String rp = c.getRpNo();
+            if (StrKit.isBlank(rp)) {
+                return null;
+            }
+            c = this.getCustomerByConNo(rp);
+        }
+        return null;
+    }
 }

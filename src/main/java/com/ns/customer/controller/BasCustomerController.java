@@ -50,7 +50,7 @@ public class BasCustomerController extends BaseController {
     static BasCustomerService service = new BasCustomerService();
 
     public void checkReferee() {
-        renderJson(BasCustomerService.me.checkReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0)));
+        renderJson(JsonResult.newJsonResult(BasCustomerService.me.checkReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0))));
     }
 
     public void updateReferee() {
@@ -59,7 +59,7 @@ public class BasCustomerController extends BaseController {
         if (StrKit.isBlank(refereeNo)) {
             throw new CustException("推荐人会员不能为空!");
         }
-        renderJson(BasCustomerService.me.updateReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), refereeNo));
+        renderJson(JsonResult.newJsonResult(BasCustomerService.me.updateReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), refereeNo)));
     }
 
 
@@ -69,11 +69,11 @@ public class BasCustomerController extends BaseController {
         if (StrKit.isBlank(refereeNo)) {
             throw new CustException("推荐人会员不能为空!");
         }
-        renderJson(BasCustomerService.me.getRefereeBaseInfo(refereeNo));
+        renderJson(JsonResult.newJsonResult(BasCustomerService.me.getRefereeBaseInfo(refereeNo)));
     }
 
     public void autoReferee() {
-        renderJson(BasCustomerService.me.autoReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0)));
+        renderJson(JsonResult.newJsonResult(BasCustomerService.me.autoReferee((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0))));
     }
 
     public void test() {
