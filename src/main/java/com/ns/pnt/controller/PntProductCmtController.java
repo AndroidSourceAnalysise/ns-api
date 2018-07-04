@@ -60,7 +60,7 @@ public class PntProductCmtController extends BaseController {
 
     public void getPntCmtList() {
         Map map = getRequestObject(getRequest(), HashMap.class);
-        int pageNumber = (int) map.get("page_number");
+        int pageNumber = (int) map.get("page_num");
         int pageSize = (int) map.get("page_size");
         String pntId = (String) map.get("pnt_id");
         String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
@@ -69,7 +69,7 @@ public class PntProductCmtController extends BaseController {
 
     public void getPntCmtChildren() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        int pageNumber = (int) params.get("page_number");
+        int pageNumber = (int) params.get("page_num");
         int pageSize = (int) params.get("page_size");
         String id = (String) params.get("id");
         String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);

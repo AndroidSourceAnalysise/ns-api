@@ -77,7 +77,7 @@ public class PntProductService {
         if (null == cache.get(key)) {
             PntProduct pntProduct = getById(pntId);
             List<PntSku> skus = pntSkuService.getByProduct(pntId);
-            List<TldPhotos> photosList = tldPhotosService.getByProduct(pntId);
+            Map photosList = tldPhotosService.getByProduct(pntId);
             resultMap.put("product", pntProduct);
             resultMap.put("skuList", skus);
             resultMap.put("photosList", photosList);

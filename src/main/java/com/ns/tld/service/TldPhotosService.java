@@ -14,7 +14,9 @@ import com.jfinal.plugin.redis.Cache;
 import com.jfinal.plugin.redis.Redis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * description: //TODO <br>
@@ -43,7 +45,18 @@ public class TldPhotosService {
         return cache.get(key);
     }
 
-    public List<TldPhotos> getByProduct(String pntId) {
-        return dao.find("select " + COLUMN + " from tld_photos where ENABLED = 1 and RELATION_ID = ? order by DISPLAY_SEQ desc", pntId);
+    public Map getByProduct(String pntId) {
+        // 1微信端 2 安卓APP  3苹果APP
+        // 1系统首页轮播图, 2系统首页底部图片, 3 商品详情顶部图 , 4商品详细图片, 5商品视频 6 商品详情参数图 7,企业资质认证图片 8公司简介图片 9个人中心背景图片
+        List<TldPhotos> top = dao.find("select " + COLUMN + " from tld_photos where ENABLED = 1 and RELATION_ID = ? and SYS_ID=1 and TYPE=3  order by DISPLAY_SEQ desc", pntId);
+        List<TldPhotos> detail = dao.find("select " + COLUMN + " from tld_photos where ENABLED = 1 and RELATION_ID = ? and SYS_ID=1 and TYPE=4  order by DISPLAY_SEQ desc", pntId);
+        List<TldPhotos> video = dao.find("select " + COLUMN + " from tld_photos where ENABLED = 1 and RELATION_ID = ? and SYS_ID=1 and TYPE=5  order by DISPLAY_SEQ desc", pntId);
+        List<TldPhotos> params = dao.find("select " + COLUMN + " from tld_photos where ENABLED = 1 and RELATION_ID = ? and SYS_ID=1 and TYPE=6  order by DISPLAY_SEQ desc", pntId);
+        HashMap map = new HashMap();
+        map.put("top", top);
+        map.put("detail", detail);
+        map.put("params", params);
+        map.put("video", video);
+        return map;
     }
 }
