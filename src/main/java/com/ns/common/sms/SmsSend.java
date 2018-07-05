@@ -59,7 +59,7 @@ public class SmsSend {
         //请求地址请登录253云通讯自助通平台查看或者询问您的商务负责人获取
         String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
         // 短信内容
-        String msg = "【弘德苑】您好,您的验证码是".concat(code) + "有效期为" + validTime + "分钟!";
+        String msg = "【咪之猫】您好,您的验证码是".concat(code) + "有效期为" + validTime + "分钟!";
         //手机号码
 
         //状态报告

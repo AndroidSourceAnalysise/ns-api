@@ -49,7 +49,7 @@ public class BasCustomerService {
     private static final String QUERY_REFEREE_SQL = "select t.RP_ID from bas_customer t where t.ID=?";
     private static final String QUERY_REFEREE_COUNT_SQL = "select count(*) from bas_customer t where t.RP_ID=?";
     private static final String QUERY_MEMBER_SQL = "select t.ORDERS_TOTAL from bas_customer_ext t where t.CON_ID=?";
-    private static final String UPDATE_REFEREE_SQL = "update bas_customer t set t.RP_ID=?,t.RP_NO,t.RP_NAME where t.ID=?";
+    private static final String UPDATE_REFEREE_SQL = "update bas_customer t set t.RP_ID=?,t.RP_NO=?,t.RP_NAME=? where t.ID=?";
 
 
     /**
@@ -59,15 +59,15 @@ public class BasCustomerService {
         // 1. 上级为空 2. 未购买 3. 没有下级
         Record record = Db.findFirst(QUERY_REFEREE_SQL, conId);
         if (StrKit.notBlank(record.getStr("RP_ID"))) {
-            throw new CustException(100, "您已经有推荐人了!");
+            return false;
         }
         int count = Db.queryInt(QUERY_MEMBER_SQL, conId);
         if (count > 0) {
-            throw new CustException(101, "您已经购买了产品!");
+            return false;
         }
         count = Db.queryInt(QUERY_REFEREE_COUNT_SQL, conId);
         if (count > 0) {
-            throw new CustException(102, "您已经有会员!");
+            return false;
         }
         return true;
     }
@@ -288,7 +288,7 @@ public class BasCustomerService {
         return true;
     }
 
-    public boolean bindMobile(String mobile, String conId, String code) {
+    public boolean bindMobile(String mobile, String code, String conId) {
         boolean result = identifyCodeService.checkIdentifyCode(mobile, code);
         if (result) {
             Record record2 = Db.findFirst("select ID,MOBILE from bas_customer where MOBILE = ?", mobile);
