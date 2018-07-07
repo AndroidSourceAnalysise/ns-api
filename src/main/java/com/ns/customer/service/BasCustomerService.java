@@ -288,8 +288,8 @@ public class BasCustomerService {
         return true;
     }
 
-    public boolean bindMobile(String mobile, String code, String conId) {
-        boolean result = identifyCodeService.checkIdentifyCode(mobile, code);
+    public boolean bindMobile(String mobile, String code, String conId, int type) {
+        boolean result = identifyCodeService.checkIdentifyCode(mobile, code, type);
         if (result) {
             Record record2 = Db.findFirst("select ID,MOBILE from bas_customer where MOBILE = ?", mobile);
             if (record2 != null) {
@@ -311,12 +311,12 @@ public class BasCustomerService {
         return dao.findById(id);
     }
 
-    public boolean update(BasCustomer customer, String code) {
+    public boolean update(BasCustomer customer, String code, int type) {
         if (StrKit.notBlank(customer.getMOBILE())) {
             if (StrKit.isBlank(code)) {
                 throw new CustException("验证码不能为空!");
             }
-            boolean result = identifyCodeService.checkIdentifyCode(customer.getMOBILE(), code);
+            boolean result = identifyCodeService.checkIdentifyCode(customer.getMOBILE(), code, type);
             if (!result) {
                 throw new CustException("验证码已失效,请重新获取!");
             }

@@ -49,10 +49,10 @@ public class TldIdentifyCodeService {
         if (record == null) {
             throw new CustException("找不到会员信息!");
         }
-        if (mobile.equals(record.getStr("MOBILE"))) {
-            throw new CustException("<" + mobile + ">该手机号码已存在绑定关系，请更换手机号码！");
-        }
-        TldIdentifyCode tldIdentifyCode = dao.findFirst("select " + COLUMN + " from tld_identify_code where ENABLED = 1 and mobile = ?", mobile);
+//        if (mobile.equals(record.getStr("MOBILE"))) {
+//            throw new CustException("<" + mobile + ">该手机号码已存在绑定关系，请更换手机号码！");
+//        }
+        TldIdentifyCode tldIdentifyCode = dao.findFirst("select " + COLUMN + " from tld_identify_code where ENABLED = 1 and mobile = ? and TYPE=?", mobile, type);
         if (tldIdentifyCode != null) {
             long timeDiff = DateUtil.getTimeDiff(DateUtil.getNow(), tldIdentifyCode.getCreateDt(), DateUtil.DIFF_UNIT_MIN);
             if (timeDiff > validTime) {
@@ -63,10 +63,10 @@ public class TldIdentifyCodeService {
             }
         }
         String code = genRandomCode();
-        isnert(code, conId, mobile);
         if (type == 0) {
-            SmsSendResponse response = SmsSend.sendSms(mobile, code,validTime);
+            SmsSendResponse response = SmsSend.sendSms(mobile, code, validTime);
             if ("0".equals(response.getCode())) {
+                isnert(code, conId, mobile, type);
                 return true;
             }
         } else {
@@ -76,19 +76,20 @@ public class TldIdentifyCodeService {
             int end = returnString.indexOf("\n");
             String result = returnString.substring(begin, end);
             if ("0".equals(result)) {
+                isnert(code, conId, mobile, type);
                 return true;
             }
         }
         return false;
     }
 
-    public boolean checkIdentifyCode(String mobile, String code) {
+    public boolean checkIdentifyCode(String mobile, String code,int type) {
         Integer validTime = 20;//默认20分钟有效时间
         String valid = sysDictService.getByParamKey(RedisKeyDetail.VALID_TIME);
         if (StrKit.notBlank(valid)) {
             validTime = Integer.valueOf(valid);
         }
-        List<TldIdentifyCode> tldIdentifyCodes = dao.find("select " + COLUMN + " from tld_identify_code where ENABLED = 1 and mobile = ? and IDENTIFY_CODE = ?", mobile, code);
+        List<TldIdentifyCode> tldIdentifyCodes = dao.find("select " + COLUMN + " from tld_identify_code where ENABLED = 1 and mobile = ? and IDENTIFY_CODE = ? and TYPE=?", mobile, code,type);
         for (TldIdentifyCode t : tldIdentifyCodes) {
             long timeDiff = DateUtil.getTimeDiff(DateUtil.getNow(), t.getCreateDt(), DateUtil.DIFF_UNIT_MIN);
             if (timeDiff > validTime) {
@@ -101,12 +102,13 @@ public class TldIdentifyCodeService {
         return false;
     }
 
-    public boolean isnert(String code, String conId, String mobile) {
+    public boolean isnert(String code, String conId, String mobile, int type) {
         TldIdentifyCode tldIdentifyCode = new TldIdentifyCode();
         tldIdentifyCode.setID(GUIDUtil.getGUID());
         tldIdentifyCode.setConId(conId);
         tldIdentifyCode.setMOBILE(mobile);
         tldIdentifyCode.setIdentifyCode(code);
+        tldIdentifyCode.setTYPE(type);
         tldIdentifyCode.setCreateDt(DateUtil.getNow());
         tldIdentifyCode.setUpdateDt(DateUtil.getNow());
         return tldIdentifyCode.save();

@@ -36,13 +36,13 @@ public abstract class BaseBasCustomerCart<M extends BaseBasCustomerCart<M>> exte
 		return getStr("product_name");
 	}
 
-	public M setProductImageUrl(java.lang.String productImageUrl) {
-		set("product_image_url", productImageUrl);
+	public M setImageUrl(java.lang.String imageUrl) {
+		set("image_url", imageUrl);
 		return (M)this;
 	}
 	
-	public java.lang.String getProductImageUrl() {
-		return getStr("product_image_url");
+	public java.lang.String getImageUrl() {
+		return getStr("image_url");
 	}
 
 	public M setSkuId(java.lang.String skuId) {
@@ -81,40 +81,40 @@ public abstract class BaseBasCustomerCart<M extends BaseBasCustomerCart<M>> exte
 		return getInt("product_num");
 	}
 
-	public M setProductPrice(java.math.BigDecimal productPrice) {
-		set("product_price", productPrice);
+	public M setSalPrice(java.math.BigDecimal salPrice) {
+		set("sal_price", salPrice);
 		return (M)this;
 	}
 	
-	public java.math.BigDecimal getProductPrice() {
-		return get("product_price");
+	public java.math.BigDecimal getSalPrice() {
+		return get("sal_price");
 	}
 
-	public M setReProductPrice(java.math.BigDecimal reProductPrice) {
-		set("re_product_price", reProductPrice);
+	public M setReSalPrice(java.math.BigDecimal reSalPrice) {
+		set("re_sal_price", reSalPrice);
 		return (M)this;
 	}
 	
-	public java.math.BigDecimal getReProductPrice() {
-		return get("re_product_price");
+	public java.math.BigDecimal getReSalPrice() {
+		return get("re_sal_price");
 	}
 
-	public M setSkuPrice(java.math.BigDecimal skuPrice) {
-		set("sku_price", skuPrice);
+	public M setSkuSalPrice(java.math.BigDecimal skuSalPrice) {
+		set("sku_sal_price", skuSalPrice);
 		return (M)this;
 	}
 	
-	public java.math.BigDecimal getSkuPrice() {
-		return get("sku_price");
+	public java.math.BigDecimal getSkuSalPrice() {
+		return get("sku_sal_price");
 	}
 
-	public M setReSkuPrice(java.math.BigDecimal reSkuPrice) {
-		set("re_sku_price", reSkuPrice);
+	public M setReSkuSalPrice(java.math.BigDecimal reSkuSalPrice) {
+		set("re_sku_sal_price", reSkuSalPrice);
 		return (M)this;
 	}
 	
-	public java.math.BigDecimal getReSkuPrice() {
-		return get("re_sku_price");
+	public java.math.BigDecimal getReSkuSalPrice() {
+		return get("re_sku_sal_price");
 	}
 
 	public M setIsSelected(java.lang.Integer isSelected) {

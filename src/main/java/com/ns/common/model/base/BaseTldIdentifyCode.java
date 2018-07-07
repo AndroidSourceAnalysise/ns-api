@@ -117,4 +117,13 @@ public abstract class BaseTldIdentifyCode<M extends BaseTldIdentifyCode<M>> exte
 		return getStr("UPDATE_DT");
 	}
 
+	public M setTYPE(java.lang.Integer TYPE) {
+		set("TYPE", TYPE);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getTYPE() {
+		return getInt("TYPE");
+	}
+
 }

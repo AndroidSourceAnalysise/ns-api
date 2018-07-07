@@ -99,7 +99,7 @@ public class BasCustomerController extends BaseController {
     public void update() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);
         BasCustomer customer = JSON.toJavaObject(jsonObject, BasCustomer.class);
-        renderJson(JsonResult.newJsonResult(service.update(customer, jsonObject.getString("CODE"))));
+        renderJson(JsonResult.newJsonResult(service.update(customer, jsonObject.getString("CODE"), jsonObject.getInteger("TYPE"))));
     }
 
 
@@ -115,7 +115,7 @@ public class BasCustomerController extends BaseController {
      */
     public void bindMobile() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(service.bindMobile((String) params.get("mobile"), (String) params.get("code"), (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0))));
+        renderJson(JsonResult.newJsonResult(service.bindMobile((String) params.get("mobile"), (String) params.get("code"), (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0), (Integer) params.get("type"))));
     }
 
     public void getByOpenId() {
