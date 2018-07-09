@@ -32,12 +32,12 @@ public class BasCustomerExtController extends BaseController {
     static BasCustPointsService pointsService = BasCustPointsService.me;
 
     public void getByConId() {
-        final String conId = (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0);
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(extService.getByConId(conId)));
     }
 
     public void getMyPoints() {
-        final String conId = (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0);
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(extService.getMyPoints(conId)));
     }
 
@@ -45,14 +45,24 @@ public class BasCustomerExtController extends BaseController {
         renderJson(JsonResult.newJsonResult(extService.pointsRanking()));
     }
 
+    public void promotionRanking() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final int start = (int) params.get("page_num");
+        final int end = (int) params.get("page_size");
+        final String y = (String) params.get("year");
+        final String m = (String) params.get("month");
+        renderJson(JsonResult.newJsonResult(extService.promotionRanking(start,end,y,m)));
+    }
+
+
     public void pointsDeduction() {
-        Map params = getRequestObject(getRequest(),HashMap.class);
+        Map params = getRequestObject(getRequest(), HashMap.class);
         renderJson(JsonResult.newJsonResult(pointsService.pointsDeduction((Integer) params.get("point"))));
     }
 
     public void getPointTransList() {
         String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        Map params = getRequestObject(getRequest(),HashMap.class);
+        Map params = getRequestObject(getRequest(), HashMap.class);
         int pageNumber = (int) params.get("page_num");
         int pageSize = (int) params.get("page_size");
         renderJson(JsonResult.newJsonResult(pointsService.getPointTransList(conId, pageNumber, pageSize)));
@@ -60,25 +70,17 @@ public class BasCustomerExtController extends BaseController {
 
     public void myCustomer() {
         String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        Map params = getRequestObject(getRequest(),HashMap.class);
-        int pageNumber = (int) params.get("page_num");
-        int pageSize = (int) params.get("page_size");
-        renderJson(JsonResult.newJsonResult(extService.myCustomer(pageNumber, pageSize, conId)));
+        final Map params = getRequestObject(getRequest(), HashMap.class);
+        final int pageNumber = (int) params.get("page_num");
+        final int pageSize = (int) params.get("page_size");
+        final int type = (int) params.get("type");
+        if (type == 0) {
+            renderJson(JsonResult.newJsonResult(extService.myCustomer(pageNumber, pageSize, conId)));
+        } else if (type == 1) {
+            renderJson(JsonResult.newJsonResult(extService.myBuyCustomer(pageNumber, pageSize, conId)));
+        } else if (type == 2) {
+            renderJson(JsonResult.newJsonResult(extService.myUnBuyCustomer(pageNumber, pageSize, conId)));
+        }
     }
 
-    public void myBuyCustomer() {
-        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        Map params = getRequestObject(getRequest(),HashMap.class);
-        int pageNumber = (int) params.get("page_num");
-        int pageSize = (int) params.get("page_size");
-        renderJson(JsonResult.newJsonResult(extService.myBuyCustomer(pageNumber, pageSize, conId)));
-    }
-
-    public void myUnBuyCustomer() {
-        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
-        Map params = getRequestObject(getRequest(),HashMap.class);
-        int pageNumber = (int) params.get("page_num");
-        int pageSize = (int) params.get("page_size");
-        renderJson(JsonResult.newJsonResult(extService.myUnBuyCustomer(pageNumber, pageSize, conId)));
-    }
 }

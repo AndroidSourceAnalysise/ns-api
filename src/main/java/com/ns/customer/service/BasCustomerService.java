@@ -345,13 +345,21 @@ public class BasCustomerService {
 
     private static final String CUSTOMER_BASE_INFO_SQL = "select c.CON_NAME,c.PIC,c.CON_NO,c.RP_NAME,b.REVENUES,b.POINTS_ENABLED from (select t.ID,t.CON_NAME,t.PIC,t.CON_NO,t.RP_NAME from bas_customer t where t.id=?) c left join bas_customer_ext b on c.ID=b.CON_ID";
 
+    private static final String CUSTOMER_TWITTER = "select t.balance_amount from tld_twitter t where t.con_id=?";
 
     public Record getBaseCustomerByIdNotNull(String conId) {
         List<Record> customer = Db.find(CUSTOMER_BASE_INFO_SQL, conId);
         if (customer == null || customer.isEmpty()) {
             throw new CustException("找不到会员信息");
         }
-        return customer.get(0);
+        Record c = customer.get(0);
+        Record record = Db.findFirst(CUSTOMER_TWITTER, conId);
+        // 总佣金
+        if (record != null) {
+            c.set("balance_amount", record.getBigDecimal("balance_amount"));
+        }
+
+        return c;
     }
 
     public BasCustomer getCustomerByOpenIdNotNull(String openId) {

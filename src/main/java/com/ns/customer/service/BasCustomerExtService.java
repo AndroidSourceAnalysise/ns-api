@@ -76,13 +76,30 @@ public class BasCustomerExtService {
         return resultMap;
     }
 
+    /**
+     * 已确认积分排行
+     *
+     * @return
+     */
     public List<Record> pointsRanking() {
         String pointStatisticsNum = sysDictService.getByParamKey(RedisKeyDetail.POINT_STATISTICS_NUM);
         int num = 10;
         if (StrKit.notBlank(pointStatisticsNum)) {
             num = Integer.valueOf(pointStatisticsNum);
         }
-        return Db.find("SELECT T.ID,T.PIC,T.CON_NAME,T.CON_NO,T2.POINTS_CFMD FROM bas_customer T INNER JOIN BAS_CUSTOMER_EXT T2 ON T.ID = T2.CON_ID ORDER BY T2.POINTS_CFMD DESC LIMIT " + num);
+        return Db.find("SELECT T.ID,T.PIC,T.CON_NAME,T.CON_NO,T2.POINTS_CFMD FROM bas_customer T INNER JOIN bas_customer_ext T2 ON T.ID = T2.CON_ID ORDER BY T2.POINTS_CFMD DESC LIMIT " + num);
+    }
+
+    private static final String PROMOTION_SELECT = "select T.PIC,T.CON_NAME,T.CON_NO,C.confirmed_promotion_fee,C.confirmed_direct_push";
+    private static final String PROMOTION_FROM = "from bas_customer T left join tld_twitter C on t.ID=C.con_id and year=? and month=? order by C.confirmed_promotion_fee desc,C.confirmed_direct_push desc";
+
+    /**
+     * 推广费排行
+     *
+     * @return
+     */
+    public Object promotionRanking(int start, int end, String year, String month) {
+        return Db.paginate(start, end, PROMOTION_SELECT, PROMOTION_FROM, year, month);
     }
 
     public Page<Record> myCustomer(int pageNumber, int pageSize, String conId) {

@@ -272,6 +272,6 @@ public class BasCustQrCodeService {
         String openid = snsAccessToken.getOpenid();
         String conNo = state;
         relationService.saveRelation(conNo, openid, "", 0, "", "", "", "");
-        return "http://xhd777.com.cn/ns-wechat/html/focusJump.html";
+        return "https://m.nashengbuy.com/ns-api/h5/html/focusJump.html";
     }
 }
