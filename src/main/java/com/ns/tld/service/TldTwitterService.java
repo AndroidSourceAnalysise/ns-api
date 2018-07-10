@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.jfinal.kit.StrKit;
+import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.ns.common.model.BasCustomer;
 import com.ns.common.model.BasCustomerExt;
 import com.ns.common.model.TldOrderItems;
@@ -317,6 +320,12 @@ public class TldTwitterService {
 			t.setUnconfirmOrder(t.getUnconfirmOrder() - 1);
 			t.setUnconfirmScale(t.getUnconfirmScale().multiply(orderAmount));
 		}
+	}
+
+	public Object getMonthScaleList(int pageNumber, int pageSize) {
+        String sql = " from tld_twitter where enable = 1 and month_sale>0 order by month_sale desc";
+        Page<Record> scaleList = Db.paginate(pageNumber, pageSize, "select " + COLUMN + "", sql);
+		return scaleList;
 	}
 
 	

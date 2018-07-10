@@ -1,25 +1,5 @@
 package com.ns.common;
 
-import com.ns.applet.controller.AppletController;
-import com.ns.cart.controller.ShopCartController;
-import com.ns.common.interceptor.GlobalInterceptor;
-import com.ns.common.model._MappingKit;
-import com.ns.common.quartzplugin.QuartzPlugin;
-import com.ns.common.task.TaskQueuePlugin;
-import com.ns.customer.controller.*;
-import com.ns.file.controller.FileController;
-import com.ns.index.IndexController;
-import com.ns.node.controller.*;
-import com.ns.pnt.controller.PntMenuController;
-import com.ns.pnt.controller.PntProductCmtController;
-import com.ns.pnt.controller.PntProductController;
-import com.ns.sys.controller.SysDictController;
-import com.ns.tld.controller.*;
-import com.ns.tld.job.OrderCloseJob;
-import com.ns.tld.job.OrderConfirmJob;
-import com.ns.weixin.controller.WeixinApiController;
-import com.ns.weixin.controller.WeixinMsgController;
-import com.ns.weixin.controller.WeixinPayController;
 import com.jfinal.config.Constants;
 import com.jfinal.config.Handlers;
 import com.jfinal.config.Interceptors;
@@ -36,6 +16,41 @@ import com.jfinal.plugin.redis.RedisPlugin;
 import com.jfinal.template.Engine;
 import com.jfinal.weixin.sdk.api.ApiConfig;
 import com.jfinal.weixin.sdk.api.ApiConfigKit;
+import com.ns.applet.controller.AppletController;
+import com.ns.cart.controller.ShopCartController;
+import com.ns.common.interceptor.GlobalInterceptor;
+import com.ns.common.model._MappingKit;
+import com.ns.common.quartzplugin.QuartzPlugin;
+import com.ns.common.task.TaskQueuePlugin;
+import com.ns.customer.controller.BasCustAddressController;
+import com.ns.customer.controller.BasCustQrCodeController;
+import com.ns.customer.controller.BasCustomerController;
+import com.ns.customer.controller.BasCustomerExtController;
+import com.ns.customer.controller.BasCustomerRequestController;
+import com.ns.file.controller.FileController;
+import com.ns.index.IndexController;
+import com.ns.node.controller.NodeCategoryController;
+import com.ns.node.controller.NodeCmtController;
+import com.ns.node.controller.NodeCollectionController;
+import com.ns.node.controller.NodeContentController;
+import com.ns.node.controller.NodeFocusController;
+import com.ns.node.controller.NodeLikeController;
+import com.ns.pnt.controller.PntMenuController;
+import com.ns.pnt.controller.PntProductCmtController;
+import com.ns.pnt.controller.PntProductController;
+import com.ns.sys.controller.SysDictController;
+import com.ns.tld.controller.RedisController;
+import com.ns.tld.controller.TLdPhotosController;
+import com.ns.tld.controller.TldCouponController;
+import com.ns.tld.controller.TldIdentifyCodeController;
+import com.ns.tld.controller.TldOrdersController;
+import com.ns.tld.controller.TldSiteMsgController;
+import com.ns.tld.controller.TldTwitterController;
+import com.ns.tld.job.OrderCloseJob;
+import com.ns.tld.job.OrderConfirmJob;
+import com.ns.weixin.controller.WeixinApiController;
+import com.ns.weixin.controller.WeixinMsgController;
+import com.ns.weixin.controller.WeixinPayController;
 
 /**
  * API引导式配置
@@ -126,6 +141,7 @@ public class MyConfig extends JFinalConfig {
         me.add("/api/api", WeixinApiController.class);
         me.add("/api/cart", ShopCartController.class);
         me.add("/api/applet", AppletController.class);
+        me.add("/api/twitter", TldTwitterController.class);
 
 
     }
