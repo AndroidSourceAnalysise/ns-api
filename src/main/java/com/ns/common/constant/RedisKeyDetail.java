@@ -78,4 +78,6 @@ public interface RedisKeyDetail {
     String SESSION_KEY = "session_key";
 
     String CON_ID = "con_id";
+
+    String RANDOM_DECREASE = "random_decrease";
 }

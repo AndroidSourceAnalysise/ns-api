@@ -9,6 +9,7 @@
 package com.ns.tld.service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import com.jfinal.plugin.activerecord.Db;
 import com.jfinal.plugin.activerecord.Page;
 import com.jfinal.plugin.activerecord.Record;
 import com.jfinal.plugin.redis.Redis;
+import com.ns.cart.service.ShopCartService;
 import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.exception.CustException;
 import com.ns.common.model.BasCustPointTrans;
@@ -36,6 +38,7 @@ import com.ns.common.model.TldOrders;
 import com.ns.common.model.TldTwitter;
 import com.ns.common.utils.DateUtil;
 import com.ns.common.utils.GUIDUtil;
+import com.ns.common.utils.Util;
 import com.ns.customer.service.BasCustPointsService;
 import com.ns.customer.service.BasCustomerExtService;
 import com.ns.customer.service.BasCustomerService;
@@ -137,6 +140,7 @@ public class TldOrdersService {
         Integer integralSup = 0;
         BigDecimal pntAmountSum = BigDecimal.ZERO;
         List<TldOrderItems> itemsList = new ArrayList<>();
+        ArrayList<String> productId = new ArrayList<>();
         int quantitySum = 0;
         for (String item : items) {
             String[] str = item.split("&");
@@ -157,6 +161,7 @@ public class TldOrdersService {
                 int[] rs = compute(isTitter, pntProduct, sku);
                 integralSelf = rs[0];
                 integralSup = rs[1];
+                productId.add(skuId);
             } else {
                 // 产品库存
                 Long stock = Redis.use().getCounter(RedisKeyDetail.PRODUCT_STOCK_ID + pntId);
@@ -168,6 +173,7 @@ public class TldOrdersService {
                 int[] rs = compute(isTitter, pntProduct, sku);
                 integralSelf = rs[0];
                 integralSup = rs[1];
+                productId.add(pntId);
             }
 //            integralSelf += sku.getIntegralSelf();
 //            integralSup += sku.getIntegralSup();
@@ -228,7 +234,22 @@ public class TldOrdersService {
         packageParams.put("orderNo", orderNo);
         packageParams.put("orderTotal", orders.getOrderTotal().toString());
         packageParams.put("point", integralSelf.toString());
+        ShopCartService.deleteByProductId(productId);
         return packageParams;
+    }
+
+
+    // 0.5-1  start+(end-start)*random
+    public BigDecimal randomDecrease() {
+        final String randomDecrease = SysDictService.me.getByParamKey(RedisKeyDetail.RANDOM_DECREASE);
+        BigDecimal rd = BigDecimal.ZERO;
+        if (StrKit.notBlank(randomDecrease) && randomDecrease.contains("-")) {
+            final String[] rs = randomDecrease.split("-");
+            final BigDecimal start = new BigDecimal(rs[0]);
+            final BigDecimal end = new BigDecimal(rs[1]);
+            rd = start.add(end.subtract(start).multiply(BigDecimal.valueOf(Util.generateRandom())));
+        }
+        return rd.setScale(2, BigDecimal.ROUND_UNNECESSARY);
     }
 
     private TldOrderItems setItems(BasCustomer customer, String orderId, String orderNo, PntSku sku, PntProduct
@@ -280,7 +301,9 @@ public class TldOrdersService {
         orders.setUp1Integral(integralSup);
         orders.setIntegralAmount(pointAmount);
         orders.setCouponAmount(couponAmount);
-        BigDecimal orderTotal = disAmount.subtract(couponAmount).subtract(pointAmount).add(orders.getFREIGHT());
+        final BigDecimal randomAmount = (customer.getSEX() == 0 ? randomDecrease() : BigDecimal.ZERO);
+        orders.setRandomAmount(randomAmount);
+        BigDecimal orderTotal = disAmount.subtract(couponAmount).subtract(pointAmount).subtract(randomAmount).add(orders.getFREIGHT());
         //防止出现负数
         if (orderTotal.compareTo(BigDecimal.ZERO) < 1) {
             orderTotal = BigDecimal.ZERO;
@@ -488,9 +511,9 @@ public class TldOrdersService {
                 String opneId = Db.queryStr("select OPENID from bas_customer where ID = ?", customer.getRpId());
                 noticeService.getRpPointsNotice(customer.getRpId(), opneId, customer.getRpName(), customer.getConNo(), orders.getPayDt(), String.valueOf(up1Integral + subscribePointsUp1), String.valueOf(up1Ext.getPointsTotal()));
             }
-            
+
             //新增.返利模块.
-            TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(),orders.getRpNo());
+            TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(), orders.getRpNo());
             twitterService.addPayDirect(t, selfExt, orders);//直推增加待确认订单
             twitterService.addPayNormal(t, selfExt, orders, BigDecimal.valueOf(0));//间接推增加待确认订单
         }
@@ -764,13 +787,13 @@ public class TldOrdersService {
         } finally {
             cache.close();
         }
-        
+
         //新增.返利模块.撤单.
-        TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(),orders.getRpNo());
+        TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(), orders.getRpNo());
         twitterService.disabledDirectOrder(t, orders);//直推完成订单
         twitterService.disabledNormalOrder(t, orders);//间接推完成订单
-    
-        
+
+
         return true;
     }
 
@@ -857,12 +880,12 @@ public class TldOrdersService {
             }
             String opneId = Db.queryStr("select OPENID from bas_customer where ID = ?", orders.getConId());
             noticeService.sendOrderReceivedNotice(orders.getConId(), opneId, orders.getOrderNo(), orders.getConfirmDt(), String.valueOf(orders.getOrderTotal()));
-        
+
             //新增.返利模块.
-            TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(),orders.getRpNo());
+            TldTwitter t = twitterService.findDirectTwitter(orders.getConNo(), orders.getRpNo());
             twitterService.confirmDirectOrder(t, selfExt, orders);//直推完成订单
             twitterService.confirmNormalOrder(t, orders);//间接推完成订单
-        
+
         } else {
             throw new CustException("未出库订单不能确认收货");
         }

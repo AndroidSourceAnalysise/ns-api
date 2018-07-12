@@ -252,6 +252,15 @@ public abstract class BaseTldOrders<M extends BaseTldOrders<M>> extends Model<M>
 		return get("INTEGRAL_AMOUNT");
 	}
 
+	public M setRandomAmount(java.math.BigDecimal randomAmount) {
+		set("RANDOM_AMOUNT", randomAmount);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getRandomAmount() {
+		return get("RANDOM_AMOUNT");
+	}
+
 	public M setPntAmount(java.math.BigDecimal pntAmount) {
 		set("PNT_AMOUNT", pntAmount);
 		return (M)this;

@@ -3,8 +3,10 @@ jdbcUrl = jdbc:mysql://45.40.251.65:3306/ns?useUnicode=true&zeroDateTimeBehavior
 user =nskj
 password =qingcheng2018@
 devMode = true
-baseUploadPath = /usr/www/static
-imageUrl = https://m.nashengbuy.com.cn
+#baseUploadPath = /usr/www/static
+baseUploadPath = /Users/longway/Documents
+imageUrl = https://m.nashengbuy.com/ns-api
+serverUrl = https://m.nashengbuy.com/ns-api/
 
 appId = wx9610e6177a7c1b4b
 appSecret = 61d20d8ce9a2cf6a6aa75f067ec7a895

@@ -38,6 +38,11 @@ import java.util.regex.Pattern;
  */
 public class Util {
     private static final Log LOGGER = Log.getLog(Util.class.getName());
+    private static final Random RANDOM = new Random();
+
+    public static Double generateRandom(){
+        return RANDOM.nextDouble();
+    }
 
     /**
      * 取Request中的数据对象

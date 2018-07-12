@@ -104,11 +104,11 @@ public class BasCustomerExtService {
 
     public Page<Record> myCustomer(int pageNumber, int pageSize, String conId) {
         String select = "SELECT  T1.ID,T1.CON_NO,T1.CON_NAME,T1.PIC,T1.CON_TYPE,T1.CREATE_DT AS REGISTER_DT,T2.ORDER_TOTAL,T2.UP1_INTEGRAL,T2.CREATE_DT AS ORDER_DT,T2.ID AS ORDER_ID ";
-        String sqlExceptSelect = "FROM bas_customer T1 LEFT JOIN TLD_ORDERS T2 ON T1.ID = T2.CON_ID AND T2.STATUS = 7 WHERE T1.RP_ID = ? order by T1.CREATE_DT desc";
+        String sqlExceptSelect = "FROM bas_customer T1 LEFT JOIN tld_orders T2 ON T1.ID = T2.CON_ID AND T2.STATUS = 7 WHERE T1.RP_ID = ? order by T1.CREATE_DT desc";
         return Db.paginate(pageNumber, pageSize, select, sqlExceptSelect, conId);
     }
 
-    public Page<Record> myBuyCustomer(int pageNumber, int pageSize, String conId) {
+    public Page<Record> myBuyCustomer(int  pageNumber, int pageSize, String conId) {
         //return Db.paginate(pageNumber, pageSize, "SELECT CON_ID,CON_NO,CON_NAME,PIC,CREATE_DT AS ORDER_DT,UP1_INTEGRAL,ORDER_TOTAL ", " FROM TLD_ORDERS WHERE STATUS = 7 AND RP_ID = ? GROUP BY CON_ID ORDER BY UPDATE_DT ", conId);
         return Db.paginate(pageNumber, pageSize, "SELECT ID,CON_NO,CON_NAME,PIC,CREATE_DT AS REGISTER_DT ", " FROM bas_customer WHERE CON_TYPE = 1 AND RP_ID = ? ORDER BY CREATE_DT desc", conId);
     }

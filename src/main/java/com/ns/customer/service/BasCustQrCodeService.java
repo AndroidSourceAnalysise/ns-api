@@ -222,6 +222,7 @@ public class BasCustQrCodeService {
 //            serverUrl = FastDfsService.upFile(filePath, "qrcode", "jpg");//老式
             //serverUrl = FastDfsService.upFileWithGroupName(filePath, "group1", "jpg");//新款
             serverUrl = COSClientManager.getInstance().uploadFile2COS(filePath, Dir.DIMEN);
+            serverUrl = serverUrl.substring(0, serverUrl.lastIndexOf("?"));
         } catch (Exception e) {
             e.printStackTrace();
         }

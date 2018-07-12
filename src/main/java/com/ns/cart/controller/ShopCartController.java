@@ -1,12 +1,16 @@
 package com.ns.cart.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.jfinal.plugin.redis.Redis;
 import com.ns.cart.service.ShopCartService;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
+import com.ns.common.utils.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -44,7 +48,7 @@ public class ShopCartController extends BaseController {
      * 更新购物车商品
      */
     public void update() {
-        Map<String, Object> params = getRequestObject(getRequest(), HashMap.class);
+        List<HashMap> params = JSONArray.parseArray(Util.getRequestBytes(getRequest()),HashMap.class);
         renderJson(JsonResult.newJsonResult(ShopCartService.update(params)));
     }
 

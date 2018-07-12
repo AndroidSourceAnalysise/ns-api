@@ -5,8 +5,7 @@ import com.jfinal.plugin.activerecord.Record;
 import com.ns.common.model.BasCustomerCart;
 import com.ns.common.utils.DateUtil;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class ShopCartService {
     private static final BasCustomerCart dao = BasCustomerCart.dao;
@@ -42,11 +41,35 @@ public class ShopCartService {
         return dao.deleteById(cartId);
     }
 
-    public static boolean update(Map<String, Object> params) {
-        Record record = new Record();
-        params.put("update_time", DateUtil.getNow());
-        record.setColumns(params);
-        return Db.update("bas_customer_cart","cart_id",record);
+    /**
+     * 删除购物车产品
+     *
+     * @param productId
+     * @return
+     */
+    public static ArrayList deleteByProductId(ArrayList<String> productId) {
+        ArrayList<String> rs = new ArrayList<>();
+        for (String pd : productId) {
+            final int c = Db.delete("delete from bas_customer_cart where product_id=? or sku_id=?", productId, productId);
+            if (c <= 0) {
+                rs.add(pd);
+            }
+        }
+        return rs;
+    }
+
+    public static List<Map<String, Object>> update(List<HashMap> params) {
+        ArrayList<Map<String, Object>> mapArrayList = new ArrayList<>();
+        for (Map<String, Object> param : params) {
+            Record record = new Record();
+            param.put("update_time", DateUtil.getNow());
+            record.setColumns(param);
+            final boolean rs = Db.update("bas_customer_cart", "cart_id", record);
+            if (!rs) {
+                mapArrayList.add(param);
+            }
+        }
+        return mapArrayList;
     }
 
     public static boolean selectAll(int allSelect, String conId) {

@@ -55,6 +55,7 @@ public class SysDictService {
         String paramValue = cache.get(paramKey);
         if (StrKit.isBlank(paramValue)) {
             paramValue = Db.queryStr("select PARAM_VALUE from sys_dict where ENABLED = 1 and PARAM_KEY = ?", paramKey);
+            cache.set(paramKey, paramValue);
         }
         return paramValue;
 
