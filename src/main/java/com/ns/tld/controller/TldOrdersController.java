@@ -41,7 +41,6 @@ public class TldOrdersController extends BaseController {
     }
 
 
-
     /**
      * 获取运费
      */
@@ -113,6 +112,12 @@ public class TldOrdersController extends BaseController {
     public void getOrderSplit() {
         Map params = getRequestObject(getRequest(), HashMap.class);
         renderJson(JsonResult.newJsonResult(ordersService.getOrderSplit((String) params.get("order_id"))));
+    }
+
+    public void getOrderById() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String orderId = (String) params.get("order_id");
+        renderJson(JsonResult.newJsonResult(ordersService.getOrderById(orderId)));
     }
 
     public static void main(String[] args) {
