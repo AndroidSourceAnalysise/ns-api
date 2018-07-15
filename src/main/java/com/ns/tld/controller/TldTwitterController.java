@@ -11,15 +11,14 @@ package com.ns.tld.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jfinal.aop.Before;
-import com.jfinal.kit.HttpKit;
-import com.jfinal.plugin.activerecord.tx.Tx;
 import com.jfinal.plugin.redis.Redis;
-import com.ns.common.Ytapi;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
+import com.ns.common.exception.CustException;
 import com.ns.common.json.JsonResult;
-import com.ns.tld.service.TldOrdersService;
+import com.ns.common.model.BasCustomer;
+import com.ns.customer.service.BasCustomerService;
+import com.ns.tld.service.TldRebateFlowService;
 import com.ns.tld.service.TldTwitterService;
 
 /**
@@ -32,6 +31,7 @@ import com.ns.tld.service.TldTwitterService;
  */
 public class TldTwitterController extends BaseController {
     static TldTwitterService tldTwitterService = TldTwitterService.me;
+    static TldRebateFlowService rebateflowService = TldRebateFlowService.me;
 
 
     public void getCurrMonthSacleList(){
@@ -40,12 +40,22 @@ public class TldTwitterController extends BaseController {
         renderJson(JsonResult.newJsonResult(tldTwitterService.getMonthScaleList(pageNumber, pageSize)));
 
     }
-    public static void main(String[] args) {
-        Map map = new HashMap();
-        map.put("id", "02988D03C7834E3997B70981E9A937D6");
-        map.put("amount", "134");
-        map.put("checkResult", "1");
-        map.put("checkRemark", "中文");
-        System.out.println(HttpKit.post("http://127.0.0.1:8110/asset/recharge/rechargeCheck", map, ""));
+    public void getTwitterFlowList() throws Exception {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        BasCustomer basCustomer = BasCustomerService.me.getCustomerById(conId);
+        if (basCustomer == null) {
+            throw new CustException("会员信息异常!");
+        }
+        final String conNo = basCustomer.getConNo();
+        
+    	//String conNo = (String) params.get("conNo");
+    	int pageNumber = (int) params.get("pageNumber");
+        int pageSize = (int) params.get("pageSize");
+        Integer status = (Integer) params.get("status");
+        Integer type = (Integer) params.get("type");
+        renderJson(JsonResult.newJsonResult(rebateflowService.getTwitterFlowList(conNo, status, type, pageNumber, pageSize)));
     }
+   
+
 }

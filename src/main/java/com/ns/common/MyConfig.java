@@ -48,6 +48,7 @@ import com.ns.tld.controller.TldSiteMsgController;
 import com.ns.tld.controller.TldTwitterController;
 import com.ns.tld.job.OrderCloseJob;
 import com.ns.tld.job.OrderConfirmJob;
+import com.ns.tld.job.TwitterMonthJob;
 import com.ns.weixin.controller.WeixinApiController;
 import com.ns.weixin.controller.WeixinMsgController;
 import com.ns.weixin.controller.WeixinPayController;
@@ -171,7 +172,7 @@ public class MyConfig extends JFinalConfig {
         RedisPlugin bbsRedis = new RedisPlugin("ns", "45.40.251.65", 7173, "h$n#s231");
         me.add(bbsRedis);
         //定时任务
-        QuartzPlugin quartzPlugin = new QuartzPlugin(OrderCloseJob.class, OrderConfirmJob.class);
+        QuartzPlugin quartzPlugin = new QuartzPlugin(OrderCloseJob.class, OrderConfirmJob.class, TwitterMonthJob.class);
         me.add(quartzPlugin);
 
         //会员任务池

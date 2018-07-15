@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.jfinal.plugin.activerecord.Db;
+import com.jfinal.plugin.activerecord.Page;
+import com.jfinal.plugin.activerecord.Record;
 import com.ns.common.model.BasCustomerExt;
 import com.ns.common.model.TldOrders;
 import com.ns.common.model.TldRebateFlow;
@@ -55,6 +57,21 @@ public class TldRebateFlowService {
 	}
 	public void disableRebate(String orderNo, String tId) {
 		Db.update("update tld_rebate_flow set status = " + STATUS_DISABLE + ",operate_dt = now() where orderNo=? and twitter_id=?", orderNo, tId);
+	}
+
+	public Object getTwitterFlowList(String conNo, Integer status, Integer type, int pageNumber, int pageSize) {
+		StringBuffer sb = new StringBuffer("from tld_rebate_flow where twitter_no = " + conNo );
+		if(status != null){
+			sb.append(" and status = " + status);
+		}
+		if(type != null){
+			sb.append(" and type = " + type);
+		}
+		sb.append(" order by create_dt desc");
+		Page<Record> flowList = Db.paginate(pageNumber, pageSize, "select " + COLUMN + "",
+				sb.toString());
+		
+		return flowList;
 	}
 
 }

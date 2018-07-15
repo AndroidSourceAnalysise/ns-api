@@ -890,9 +890,25 @@ public final class DateUtil {
         return format.format(date);
     }
 
-    public static void main(String[] args) {
-        //
+    /**
+     * 获取前后几个月 \天指定日期
+     * @param months 前后几个月 
+     * 		  days 前后几天 .负数为向前
+     *        pattern: 格式,可空.
+     * @return "yyyy-MM"
+     */
+    public static String getMonthStr(int months,int days, String pattern) {
+        if(null == pattern){
+        	pattern = DEFAULT_DATE_TIME_RFGFX;
+        }
+    	Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONDAY, months); 
+        calendar.add(Calendar.MONDAY, days); 
+        Date date = calendar.getTime();
+        return format(date, pattern);
+    }
 
+    public static void main(String[] args) {
         System.out.println(getNow());
         System.out.println(addDate(getNow(), -15, 0));
     }
