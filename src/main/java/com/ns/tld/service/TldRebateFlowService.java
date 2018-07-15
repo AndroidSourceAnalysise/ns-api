@@ -60,7 +60,7 @@ public class TldRebateFlowService {
 	}
 
 	public Object getTwitterFlowList(String conNo, Integer status, String type, int pageNumber, int pageSize) {
-		StringBuffer sb = new StringBuffer("from tld_rebate_flow where twitter_no = " + conNo );
+		StringBuffer sb = new StringBuffer("from tld_rebate_flow where twitter_no = '" + conNo + "'");
 		if(status != null){
 			sb.append(" and status = " + status);
 		}
