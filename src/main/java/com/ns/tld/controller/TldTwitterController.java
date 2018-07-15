@@ -53,7 +53,7 @@ public class TldTwitterController extends BaseController {
     	int pageNumber = (int) params.get("pageNumber");
         int pageSize = (int) params.get("pageSize");
         Integer status = (Integer) params.get("status");
-        Integer type = (Integer) params.get("type");
+        String type = (String) params.get("type");
         renderJson(JsonResult.newJsonResult(rebateflowService.getTwitterFlowList(conNo, status, type, pageNumber, pageSize)));
     }
    

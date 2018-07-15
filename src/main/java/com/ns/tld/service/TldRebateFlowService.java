@@ -59,13 +59,13 @@ public class TldRebateFlowService {
 		Db.update("update tld_rebate_flow set status = " + STATUS_DISABLE + ",operate_dt = now() where orderNo=? and twitter_id=?", orderNo, tId);
 	}
 
-	public Object getTwitterFlowList(String conNo, Integer status, Integer type, int pageNumber, int pageSize) {
+	public Object getTwitterFlowList(String conNo, Integer status, String type, int pageNumber, int pageSize) {
 		StringBuffer sb = new StringBuffer("from tld_rebate_flow where twitter_no = " + conNo );
 		if(status != null){
 			sb.append(" and status = " + status);
 		}
 		if(type != null){
-			sb.append(" and type = " + type);
+				sb.append(" and type in ( " + type + ")");
 		}
 		sb.append(" order by create_dt desc");
 		Page<Record> flowList = Db.paginate(pageNumber, pageSize, "select " + COLUMN + "",
