@@ -24,18 +24,18 @@ import java.util.Random;
 public class SmsSend {
     public static final String charset = "utf-8";
     // 用户平台API账号(非登录账号,示例:N1234567)
-    public static String account = "N8437461";
+    public static String account = "CN7465164";
     // 用户平台API密码(非登录密码)
-    public static String pswd = "l3vFn9jKz";
+    public static String pswd = "qingcheng2018@";
 
     public static void main(String[] args) throws UnsupportedEncodingException {
 
         //请求地址请登录253云通讯自助通平台查看或者询问您的商务负责人获取
         String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
         // 短信内容
-        String msg = "【弘德苑】你好,你的验证码是159357";
+        String msg = "【纳盛科技】你好,你的验证码是159357";
         //手机号码
-        String phone = "18890363492";
+        String phone = "13875991429";
         //状态报告
         String report = "true";
 
@@ -59,7 +59,7 @@ public class SmsSend {
         //请求地址请登录253云通讯自助通平台查看或者询问您的商务负责人获取
         String smsSingleRequestServerUrl = "http://smssh1.253.com/msg/send/json";
         // 短信内容
-        String msg = "【咪之猫】您好,您的验证码是".concat(code) + "有效期为" + validTime + "分钟!";
+        String msg = "【纳盛科技】您好,您的验证码是".concat(code) + "有效期为" + validTime + "分钟!";
         //手机号码
 
         //状态报告

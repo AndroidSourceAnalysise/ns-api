@@ -46,13 +46,13 @@ public class BasCustQrCodeController extends BaseController {
         int type = (int) params.get("type");
         String bgmTemplateId = (String) params.get("bgmTemplateId");
         Map map = new HashMap<>();
-        String qrCode_exInfo = PropKit.get("serverUrl") + "api/qrcode/sanQrCode?conNo=" + conNo;
+        //String qrCode_exInfo = PropKit.get("serverUrl") + "api/qrcode/sanQrCode?conNo=" + conNo;
         BasCustQrcode basCustQrcode = service.getConQrcode(conNo, type, bgmTemplateId);
         final String tid = basCustQrcode.getBgmId();
         final String codeUrl = basCustQrcode.getCodeUrl();
         map.put("bgmId", tid);
         map.put("codeImageUrl", codeUrl);
-        map.put("codeContentUrl", qrCode_exInfo);
+        //map.put("codeContentUrl", qrCode_exInfo);
         renderJson(JsonResult.newJsonResult(map));
     }
 

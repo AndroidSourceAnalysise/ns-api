@@ -370,7 +370,9 @@ public class BasCustomerService {
         Record record = Db.findFirst(CUSTOMER_TWITTER, conId);
         // 总佣金
         if (record != null) {
-            c.set("balance_amount", record.getBigDecimal("balance_amount"));
+            c.set("BALANCE_AMOUNT", record.getBigDecimal("balance_amount"));
+        } else {
+            c.set("BALANCE_AMOUNT", 0);
         }
 
         return c;

@@ -9,8 +9,7 @@
 package com.ns.customer.service;
 
 import com.jfinal.kit.HttpKit;
-import com.jfinal.weixin.sdk.api.ApiResult;
-import com.jfinal.weixin.sdk.api.QrcodeApi;
+import com.jfinal.weixin.sdk.api.*;
 import com.jfinal.weixin.sdk.utils.HttpUtils;
 import com.ns.common.exception.CustException;
 import com.ns.common.model.BasCustQrcode;
@@ -27,8 +26,6 @@ import com.ns.tld.service.TLdQrBgmParamsService;
 import com.jfinal.kit.PropKit;
 import com.jfinal.kit.StrKit;
 
-import com.jfinal.weixin.sdk.api.SnsAccessToken;
-import com.jfinal.weixin.sdk.api.SnsAccessTokenApi;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -260,8 +257,12 @@ public class BasCustQrCodeService {
     }
 
     private String getLimitLocalQrCode(String con_no) throws Exception {
-        String filePath = fileDir + con_no+".jpg";
+        String filePath = fileDir + con_no + ".png";
         File file = new File(filePath);
+        File parent = file.getParentFile();
+        if (!parent.exists()) {
+            parent.mkdirs();
+        }
         if (!file.exists()) {
             ApiResult apiResult = QrcodeApi.createPermanent(con_no);
             if (apiResult.isSucceed()) {
