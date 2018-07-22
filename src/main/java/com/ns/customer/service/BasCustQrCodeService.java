@@ -8,6 +8,10 @@
  */
 package com.ns.customer.service;
 
+import com.jfinal.kit.HttpKit;
+import com.jfinal.weixin.sdk.api.ApiResult;
+import com.jfinal.weixin.sdk.api.QrcodeApi;
+import com.jfinal.weixin.sdk.utils.HttpUtils;
 import com.ns.common.exception.CustException;
 import com.ns.common.model.BasCustQrcode;
 import com.ns.common.model.BasCustomer;
@@ -87,7 +91,7 @@ public class BasCustQrCodeService {
      * @throws Exception
      */
     private BasCustQrcode createQrdode(BasCustomer customer, BasCustQrcode basCustQrcode, TldQrbgmParams tldQrbgmParams) throws Exception {
-        String qrCodeFilePath = genLocalQrCode(customer.getConNo());
+        String qrCodeFilePath = getLimitLocalQrCode(customer.getConNo());
         String relativePath;//图片合成
         String codeUrl;
         //如果这个会员没有产生过二维码.则新增
@@ -105,6 +109,7 @@ public class BasCustQrCodeService {
                 relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
                 codeUrl = savePicToFileServer(relativePath);
                 basCustQrcode2 = setQrcodeAttr(customer, tldQrbgmParams.getID(), codeUrl, relativePath);
+                basCustQrcode2.setPermanentBar(1);
                 basCustQrcode2.save();
                 //默认设为非默认
                 basCustQrcode.setSTATUS(0);
@@ -153,6 +158,7 @@ public class BasCustQrCodeService {
         basCustQrcode.setSTATUS(1);//设为默认二维码
         basCustQrcode.setCreateDt(DateUtil.getNow());
         basCustQrcode.setUpdateDt(DateUtil.getNow());
+        basCustQrcode.setPermanentBar(1);
         return basCustQrcode;
     }
 
@@ -250,6 +256,41 @@ public class BasCustQrCodeService {
         String filePath = fileDir + con_no;
         String fileName = QrCodeUtil.encode(qrCode_exInfo, "", filePath, con_no, "png", true);
         return filePath + "/" + fileName;
+
+    }
+
+    private String getLimitLocalQrCode(String con_no) throws Exception {
+        String filePath = fileDir + con_no+".jpg";
+        File file = new File(filePath);
+        if (!file.exists()) {
+            ApiResult apiResult = QrcodeApi.createPermanent(con_no);
+            if (apiResult.isSucceed()) {
+                final String ticket = apiResult.getStr("ticket");
+                final String url = QrcodeApi.getShowQrcodeUrl(ticket);
+                InputStream inputStream = HttpUtils.download(url, null);
+                BufferedOutputStream bos = null;
+                byte[] buf = new byte[8192];
+                int len;
+                try {
+                    bos = new BufferedOutputStream(new FileOutputStream(file));
+                    while ((len = inputStream.read(buf)) != -1) {
+                        bos.write(buf, 0, len);
+                    }
+
+                } catch (Throwable tx) {
+
+                } finally {
+                    if (bos != null) {
+                        bos.close();
+                    }
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
+                }
+
+            }
+        }
+        return filePath;
 
     }
 

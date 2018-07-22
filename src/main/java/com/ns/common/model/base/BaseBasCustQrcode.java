@@ -144,4 +144,13 @@ public abstract class BaseBasCustQrcode<M extends BaseBasCustQrcode<M>> extends 
 		return getStr("UPDATE_DT");
 	}
 
+	public M setPermanentBar(java.lang.Integer permanentBar) {
+		set("PERMANENT_BAR", permanentBar);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getPermanentBar() {
+		return getInt("PERMANENT_BAR");
+	}
+
 }

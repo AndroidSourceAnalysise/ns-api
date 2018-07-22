@@ -197,6 +197,7 @@ public class BasCustomerService {
         //return customer.save() && extService.addBasCustomerExt(customer.getID(), customer.getConNo(), customer.getConName());
     }
 
+
     public BasCustomer setCustomerAttr(String conName, String pic, int sex, int conType, String birthDay, String country, String province, String city, String district,
                                        String address, String unionId, String openId, String rpId, String rpNo, String rpName) {
         BasCustomer customer = new BasCustomer();
@@ -311,22 +312,35 @@ public class BasCustomerService {
         return dao.findById(id);
     }
 
-    public boolean update(BasCustomer customer, String code, int type) {
-        if (StrKit.notBlank(customer.getMOBILE())) {
+    public boolean update(String conId, String mobile, String code, int type) {
+        if (StrKit.notBlank(mobile)) {
             if (StrKit.isBlank(code)) {
                 throw new CustException("验证码不能为空!");
             }
-            boolean result = identifyCodeService.checkIdentifyCode(customer.getMOBILE(), code, type);
+            boolean result = identifyCodeService.checkIdentifyCode(mobile, code, type);
             if (!result) {
                 throw new CustException("验证码已失效,请重新获取!");
             }
-            Record record2 = Db.findFirst("select ID,MOBILE from bas_customer where MOBILE = ?", customer.getMOBILE());
+            Record record2 = Db.findFirst("select ID,MOBILE from bas_customer where MOBILE = ?", mobile);
             if (record2 != null) {
-                throw new CustException("<" + customer.getMOBILE() + ">该手机号码已存在绑定关系，请更换手机号码！");
+                throw new CustException("<" + mobile + ">该手机号码已存在绑定关系，请更换手机号码！");
             }
         }
-        customer.setUpdateDt(DateUtil.getNow());
-        return customer.update();
+        return Db.update("update bas_customer set mobile=?,UPDATE_DT=? where id=?", mobile, DateUtil.getNow(), conId) > 0;
+    }
+
+    public boolean updateBaseInfo(String conId, String avatar, String nickname) {
+        BasCustomer basCustomer = dao.findById(conId);
+        if (basCustomer == null) {
+            throw new CustException("会员不存在!");
+        }
+        if (StrKit.notBlank(avatar)) {
+            basCustomer.setPIC(avatar);
+        }
+        if (StrKit.notBlank(nickname)) {
+            basCustomer.setConName(nickname);
+        }
+        return basCustomer.update();
     }
 
     /**

@@ -39,7 +39,7 @@ public class TldSiteMsgController extends BaseController {
     public void getMsg() {
         String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         Map params = getRequestObject(getRequest(), HashMap.class);
-        int pageNumber = (int) params.get("page_number");
+        int pageNumber = (int) params.get("page_num");
         int pageSize = (int) params.get("page_size");
         String type = (String) params.get("type");
         renderJson(JsonResult.newJsonResult(msgService.getMsg(pageNumber, pageSize, conId, type)));

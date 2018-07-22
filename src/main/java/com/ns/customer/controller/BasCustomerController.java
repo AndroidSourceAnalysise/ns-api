@@ -98,8 +98,13 @@ public class BasCustomerController extends BaseController {
 
     public void update() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);
-        BasCustomer customer = JSON.toJavaObject(jsonObject, BasCustomer.class);
-        renderJson(JsonResult.newJsonResult(service.update(customer, jsonObject.getString("CODE"), jsonObject.getInteger("TYPE"))));
+//        BasCustomer customer = JSON.toJavaObject(jsonObject, BasCustomer.class);
+        renderJson(JsonResult.newJsonResult(service.update((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), jsonObject.getString("mobile"), jsonObject.getString("code"), jsonObject.getInteger("type"))));
+    }
+
+    public void updateBaseInfo() {
+        Map params = getRequestObject(getRequest(), HashMap.class);
+        renderJson(JsonResult.newJsonResult(service.updateBaseInfo((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), (String) params.get("avatar"), (String) params.get("nickname"))));
     }
 
 
@@ -107,7 +112,7 @@ public class BasCustomerController extends BaseController {
      * 检测会员是否绑定手机号码了
      */
     public void checkMobileBind() {
-        renderJson(JsonResult.newJsonResult(service.isMobileBind((String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0))));
+        renderJson(JsonResult.newJsonResult(service.isMobileBind((String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0))));
     }
 
     /**
@@ -115,7 +120,7 @@ public class BasCustomerController extends BaseController {
      */
     public void bindMobile() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderJson(JsonResult.newJsonResult(service.bindMobile((String) params.get("mobile"), (String) params.get("code"), (String) Redis.use().hmget(getHeader("sk"),RedisKeyDetail.CON_ID).get(0), (Integer) params.get("type"))));
+        renderJson(JsonResult.newJsonResult(service.bindMobile((String) params.get("mobile"), (String) params.get("code"), (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0), (Integer) params.get("type"))));
     }
 
     public void getByOpenId() {

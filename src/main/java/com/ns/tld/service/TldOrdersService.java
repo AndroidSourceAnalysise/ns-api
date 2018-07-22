@@ -73,7 +73,7 @@ public class TldOrdersService {
     static TldTwitterService twitterService = TldTwitterService.me;
     static TldRebateFlowService flowService = TldRebateFlowService.me;
     static NoticeService noticeService = NoticeService.me;
-    private final String COLUMN = "ID,ORDER_NO,CON_ID,CON_NO,CON_NAME,PIC,PAY_DT,SHIPPING_DT,CONFIRM_DT,COUNTRY,PROVINCE,CITY,DISTRICT,ADDRESS,POSTAL_CODE,MOBILE,RECIPIENTS,FREIGHT,WEIGHT,PAYMENT_TYPEID,PAYMENT_TYPE,ORDER_SOURCE,ORDER_TYPE,ORDER_TOTAL,COUPON_AMOUNT,INTEGRAL_AMOUNT,PNT_AMOUNT,IS_DISCOUNT,IS_REORDER,SELF_INTEGRAL,UP1_INTEGRAL,RP_ID,RP_NO,RP_NAME,ENABLED,VERSION,"
+    private final String COLUMN = "ID,ORDER_NO,CON_ID,CON_NO,CON_NAME,PIC,PAY_DT,SHIPPING_DT,CONFIRM_DT,COUNTRY,PROVINCE,CITY,DISTRICT,ADDRESS,POSTAL_CODE,MOBILE,RECIPIENTS,FREIGHT,WEIGHT,PAYMENT_TYPEID,PAYMENT_TYPE,ORDER_SOURCE,ORDER_TYPE,ORDER_TOTAL,COUPON_AMOUNT,DISCOUNT_AMOUNT,INTEGRAL_AMOUNT,RANDOM_AMOUNT,PNT_AMOUNT,IS_DISCOUNT,IS_REORDER,SELF_INTEGRAL,UP1_INTEGRAL,RP_ID,RP_NO,RP_NAME,ENABLED,VERSION,"
             + "STATUS,REMARK,CREATE_BY,CREATE_DT,UPDATE_DT ";
 
     public static void main(String[] args) {
@@ -243,7 +243,7 @@ public class TldOrdersService {
         } else {
             orderPay(orderId, 0);
         }
-        packageParams.put("orderId", orderId);
+        packageParams.put("orderId", orderId); // 后续查找订单信息
         packageParams.put("orderNo", orderNo);
         packageParams.put("orderTotal", orders.getOrderTotal().toString());
         packageParams.put("point", integralSelf.toString());
@@ -615,6 +615,7 @@ public class TldOrdersService {
         orders.setUp1Integral(integralSup);
         orders.setIntegralAmount(pointAmount);
         orders.setCouponAmount(couponAmount);
+        orders.setDiscountAmount(disAmount);
         final BigDecimal randomAmount = (customer.getSEX() == 0 ? randomDecrease() : BigDecimal.ZERO);
         orders.setRandomAmount(randomAmount);
         BigDecimal orderTotal = disAmount.subtract(couponAmount).subtract(pointAmount).subtract(randomAmount).add(orders.getFREIGHT());
@@ -889,7 +890,7 @@ public class TldOrdersService {
 
     public Record getOrderItems(String orderId) {
         Record record = Db.findFirst("select " + COLUMN + " from tld_orders where ENABLED = 1 and id = ?", orderId);
-        record.set("ITEMS", Db.find("select t1.*,t2.THUMB_URL from tld_order_items t1 left join pnt_sku t2 on t1.sku_id = t2.id where t1.ENABLED = 1 and t1.order_id = ?", orderId));
+        record.set("ITEMS", Db.find("select t1.*,t2.THUMB_URL from tld_order_items t1 left join pnt_product t2 on t1.PNT_ID = t2.ID where t1.ENABLED = 1 and t1.order_id = ?", orderId));
         return record;
     }
 
@@ -943,4 +944,5 @@ public class TldOrdersService {
             cache.incrBy(RedisKeyDetail.PRODUCT_STOCK_ID + productId, quantity);
         }
     }
+
 }
