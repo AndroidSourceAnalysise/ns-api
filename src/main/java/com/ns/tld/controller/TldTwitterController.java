@@ -41,7 +41,6 @@ public class TldTwitterController extends BaseController {
 
     }
     public void getTwitterFlowList() throws Exception {
-        Map params = getRequestObject(getRequest(), HashMap.class);
         final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         BasCustomer basCustomer = BasCustomerService.me.getCustomerById(conId);
         if (basCustomer == null) {
@@ -49,11 +48,11 @@ public class TldTwitterController extends BaseController {
         }
         final String conNo = basCustomer.getConNo();
         
-    	//String conNo = (String) params.get("conNo");
-    	int pageNumber = (int) params.get("pageNumber");
-        int pageSize = (int) params.get("pageSize");
-        Integer status = (Integer) params.get("status");
-        String type = (String) params.get("type");
+    	//String conNo = getPara("conNo");
+    	int pageNumber = getParaToInt("pageNumber");
+        int pageSize = getParaToInt("pageSize");
+        Integer status = getParaToInt("status");
+        String type = getPara("type");
         renderJson(JsonResult.newJsonResult(rebateflowService.getTwitterFlowList(conNo, status, type, pageNumber, pageSize)));
     }
    

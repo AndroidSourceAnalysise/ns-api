@@ -25,7 +25,7 @@ public class TldRebateFlowService {
 	public final int STATUS_FINISH = 1;
 	public final int STATUS_DISABLE = -1;
 	
-	private static final String COLUMN = "id,order_no,buyer_id,buyer_name,twitter_id,twitter_no,twitter_name,direct_rebate_no,direct_rebate_name,type,status,create_dt,operate_dt";
+	private static final String COLUMN = "id,order_no,buyer_id,buyer_name,twitter_id,twitter_no,twitter_name,direct_rebate_no,direct_rebate_name,scale,fee,type,status,create_dt,operate_dt";
 	
 	public List<TldRebateFlow> getByOrderNo(String orderNo){
 		return dao.find("select " + COLUMN + " from tld_rebate_flow where order_no=?", orderNo);
@@ -60,7 +60,7 @@ public class TldRebateFlowService {
 	}
 
 	public Object getTwitterFlowList(String conNo, Integer status, String type, int pageNumber, int pageSize) {
-		StringBuffer sb = new StringBuffer("from tld_rebate_flow where twitter_no = " + conNo );
+		StringBuffer sb = new StringBuffer("from tld_rebate_flow where twitter_no = '" + conNo + "'");
 		if(status != null){
 			sb.append(" and status = " + status);
 		}
