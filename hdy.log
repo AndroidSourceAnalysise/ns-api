@@ -1,8 +1,0 @@
-
-2018-07-26 12:38:53
-[ERROR]-[Thread: main]-[com.jfinal.kit.LogKit.error()]: port: 80 already in use!
-java.lang.IllegalStateException: port: 80 already in use!
-	at com.jfinal.server.JettyServer.doStart(JettyServer.java:87)
-	at com.jfinal.server.JettyServer.start(JettyServer.java:70)
-	at com.jfinal.core.JFinal.start(JFinal.java:162)
-	at com.ns.common.MyConfig.main(MyConfig.java:237)
