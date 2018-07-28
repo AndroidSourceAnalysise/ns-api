@@ -8,6 +8,7 @@
  */
 package com.ns.tld.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jfinal.plugin.redis.Redis;
 import com.ns.common.Ytapi;
@@ -15,12 +16,14 @@ import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
 import com.ns.common.utils.Util;
+import com.ns.tld.domain.YTDO;
 import com.ns.tld.service.TldOrdersService;
 import com.jfinal.aop.Before;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.plugin.activerecord.tx.Tx;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -106,7 +109,9 @@ public class TldOrdersController extends BaseController {
 
     public void getWaybill() {
         Map params = getRequestObject(getRequest(), HashMap.class);
-        renderText(Ytapi.ytPost((String) params.get("billNo")));
+        String json = Ytapi.ytPost((String) params.get("billNo"));
+        List<YTDO> ytdoList = JSON.parseArray(json, YTDO.class);
+        renderJson(JsonResult.newJsonResult(ytdoList));
     }
 
     public void getOrderSplit() {
