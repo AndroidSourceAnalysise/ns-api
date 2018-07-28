@@ -357,7 +357,7 @@ public class BasCustomerService {
         return customer;
     }
 
-    private static final String CUSTOMER_BASE_INFO_SQL = "select c.CON_NAME,c.PIC,c.CON_NO,c.RP_NAME,b.REVENUES,b.POINTS_ENABLED from (select t.ID,t.CON_NAME,t.PIC,t.CON_NO,t.RP_NAME from bas_customer t where t.id=?) c left join bas_customer_ext b on c.ID=b.CON_ID";
+    private static final String CUSTOMER_BASE_INFO_SQL = "select c.CON_NAME,c.PIC,c.CON_NO,c.RP_NAME,c.MOBILE,b.REVENUES,b.POINTS_ENABLED from (select t.ID,t.CON_NAME,t.PIC,t.CON_NO,t.RP_NAME,t.MOBILE from bas_customer t where t.id=?) c left join bas_customer_ext b on c.ID=b.CON_ID";
 
     private static final String CUSTOMER_TWITTER = "select t.balance_amount from tld_twitter t where t.con_id=?";
 

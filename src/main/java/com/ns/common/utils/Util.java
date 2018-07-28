@@ -1,6 +1,8 @@
 package com.ns.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.jfinal.weixin.sdk.utils.Charsets;
+import com.jfinal.weixin.sdk.utils.IOUtils;
 import com.ns.common.exception.CustException;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.kit.StrKit;
@@ -15,12 +17,12 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,7 +42,7 @@ public class Util {
     private static final Log LOGGER = Log.getLog(Util.class.getName());
     private static final Random RANDOM = new Random();
 
-    public static Double generateRandom(){
+    public static Double generateRandom() {
         return RANDOM.nextDouble();
     }
 
@@ -538,12 +540,12 @@ public class Util {
         }
     }
 
-    public static byte[] AES_CBC_Decrypt(byte[] data, byte[] key, byte[] iv) throws Exception{
+    public static byte[] AES_CBC_Decrypt(byte[] data, byte[] key, byte[] iv) throws Exception {
         Cipher cipher = getCipher(Cipher.DECRYPT_MODE, key, iv);
         return cipher.doFinal(data);
     }
 
-    private static Cipher getCipher(int mode, byte[] key, byte[] iv) throws Exception{
+    private static Cipher getCipher(int mode, byte[] key, byte[] iv) throws Exception {
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
         //因为AES的加密块大小是128bit(16byte), 所以key是128、192、256bit无关
@@ -553,6 +555,21 @@ public class Util {
         cipher.init(mode, secretKeySpec, new IvParameterSpec(iv));
 
         return cipher;
+    }
+
+    public static InputStream download(String url) throws IOException {
+        URL _url = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) _url.openConnection();
+        // 连接超时
+        conn.setConnectTimeout(25000);
+        // 读取超时 --服务器响应比较慢，增大时间
+        conn.setReadTimeout(25000);
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-Type", "Keep-Alive");
+        conn.setDoOutput(true);
+        conn.setDoInput(true);
+        conn.connect();
+        return conn.getInputStream();
     }
 
 

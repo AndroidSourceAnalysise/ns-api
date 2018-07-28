@@ -46,11 +46,11 @@ public class COSClientManager {
         ClientConfig clientConfig = new ClientConfig(new Region("ap-chengdu"));
 // 3 生成cos客户端
         mCOSClient = new COSClient(cred, clientConfig);
-        AccessControlList accessControlList = new AccessControlList();
-        Owner owner = new Owner();
-        owner.setId("qcs::cam::uin/100005491024:uin/100005491024");
-        accessControlList.setOwner(owner);
-        mCOSClient.setBucketAcl(BUCKET_NAME, accessControlList);
+        //AccessControlList accessControlList = new AccessControlList();
+//        Owner owner = new Owner();
+//        owner.setId("qcs::cam::uin/100005491024:uin/100005491024");
+//        accessControlList.setOwner(owner);
+        //mCOSClient.setBucketAcl(BUCKET_NAME,accessControlList);
     }
 
     public static COSClientManager getInstance() {

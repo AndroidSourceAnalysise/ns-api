@@ -13,8 +13,10 @@ import com.jfinal.plugin.redis.Redis;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
+import com.ns.common.model.BasCustomer;
 import com.ns.common.model.PntProductCmt;
 import com.ns.common.utils.Util;
+import com.ns.customer.service.BasCustomerService;
 import com.ns.pnt.service.PntProductCmtService;
 import com.jfinal.aop.Before;
 import com.jfinal.plugin.activerecord.Db;
@@ -41,7 +43,13 @@ public class PntProductCmtController extends BaseController {
     public void inertCMT() {
         JSONObject json = Util.getRequestObject(getRequest(), JSONObject.class);
         PntProductCmt cmt = JSONObject.toJavaObject(json, PntProductCmt.class);
-        renderJson(JsonResult.newJsonResult(cmtService.inertCMT(cmt, json.getString("item_id"))));
+        String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
+        BasCustomer basCustomer = BasCustomerService.me.getCustomerById(conId);
+        cmt.setConId(conId);
+        cmt.setConNo(basCustomer.getConNo());
+        cmt.setConName(basCustomer.getConName());
+        cmt.setPIC(basCustomer.getPIC());
+        renderJson(JsonResult.newJsonResult(cmtService.inertCMT(cmt, json.getString("ITEM_ID"))));
     }
 
     public void pntCmtLike() {

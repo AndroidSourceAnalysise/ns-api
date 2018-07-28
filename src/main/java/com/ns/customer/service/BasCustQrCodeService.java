@@ -30,6 +30,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.HttpClientUtils;
 import org.apache.http.impl.client.HttpClients;
 
 import javax.imageio.ImageIO;
@@ -93,9 +94,9 @@ public class BasCustQrCodeService {
         String codeUrl;
         //如果这个会员没有产生过二维码.则新增
         if (basCustQrcode == null) {
-            relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
-            codeUrl = savePicToFileServer(relativePath);
-            basCustQrcode = setQrcodeAttr(customer, tldQrbgmParams.getID(), codeUrl, relativePath);
+            //relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
+            codeUrl = savePicToFileServer(qrCodeFilePath);
+            basCustQrcode = setQrcodeAttr(customer, tldQrbgmParams.getID(), codeUrl, qrCodeFilePath);
             basCustQrcode.save();
             return basCustQrcode;
         } else {
@@ -103,9 +104,9 @@ public class BasCustQrCodeService {
             BasCustQrcode basCustQrcode2 = getQrcodeByConNoAndBgmId(customer.getConNo(), tldQrbgmParams.getID());
             //新模板
             if (basCustQrcode2 == null) {
-                relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
-                codeUrl = savePicToFileServer(relativePath);
-                basCustQrcode2 = setQrcodeAttr(customer, tldQrbgmParams.getID(), codeUrl, relativePath);
+                //relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
+                codeUrl = savePicToFileServer(qrCodeFilePath);
+                basCustQrcode2 = setQrcodeAttr(customer, tldQrbgmParams.getID(), codeUrl, qrCodeFilePath);
                 basCustQrcode2.setPermanentBar(1);
                 basCustQrcode2.save();
                 //默认设为非默认
@@ -113,18 +114,18 @@ public class BasCustQrCodeService {
                 basCustQrcode.update();
             } else {
                 if (Objects.equals(basCustQrcode.getID(), basCustQrcode2.getID())) {
-                    relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
-                    codeUrl = savePicToFileServer(relativePath);
+                    //relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
+                    codeUrl = savePicToFileServer(qrCodeFilePath);
                     basCustQrcode2.setCodeUrl(codeUrl);
-                    basCustQrcode2.setFilePath(relativePath);
+                    basCustQrcode2.setFilePath(qrCodeFilePath);
                     basCustQrcode2.setBgmId(tldQrbgmParams.getID());
                     basCustQrcode2.setVERSION(basCustQrcode2.getVERSION() + 1);
                     basCustQrcode2.update();
                 } else {
-                    relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
-                    codeUrl = savePicToFileServer(relativePath);
+                    //relativePath = mergeImg(tldQrbgmParams, qrCodeFilePath, customer);
+                    codeUrl = savePicToFileServer(qrCodeFilePath);
                     basCustQrcode2.setCodeUrl(codeUrl);
-                    basCustQrcode2.setFilePath(relativePath);
+                    basCustQrcode2.setFilePath(qrCodeFilePath);
                     basCustQrcode2.setBgmId(tldQrbgmParams.getID());
                     basCustQrcode2.setVERSION(basCustQrcode2.getVERSION() + 1);
                     basCustQrcode2.setSTATUS(1);
@@ -261,31 +262,31 @@ public class BasCustQrCodeService {
         File file = new File(filePath);
         File parent = file.getParentFile();
         if (!parent.exists()) {
-            parent.mkdirs();
+            boolean success = parent.mkdirs();
+            System.out.println("mkdirs:" + success);
         }
         if (!file.exists()) {
             ApiResult apiResult = QrcodeApi.createPermanent(con_no);
             if (apiResult.isSucceed()) {
                 final String ticket = apiResult.getStr("ticket");
                 final String url = QrcodeApi.getShowQrcodeUrl(ticket);
-                InputStream inputStream = HttpUtils.download(url, null);
+                InputStream is = Util.download(url);
                 BufferedOutputStream bos = null;
                 byte[] buf = new byte[8192];
                 int len;
                 try {
                     bos = new BufferedOutputStream(new FileOutputStream(file));
-                    while ((len = inputStream.read(buf)) != -1) {
+                    while ((len = is.read(buf)) != -1) {
                         bos.write(buf, 0, len);
                     }
-
                 } catch (Throwable tx) {
 
                 } finally {
                     if (bos != null) {
                         bos.close();
                     }
-                    if (inputStream != null) {
-                        inputStream.close();
+                    if (is != null) {
+                        is.close();
                     }
                 }
 

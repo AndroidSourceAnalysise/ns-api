@@ -53,6 +53,8 @@ import com.ns.weixin.controller.WeixinApiController;
 import com.ns.weixin.controller.WeixinMsgController;
 import com.ns.weixin.controller.WeixinPayController;
 
+import java.util.UUID;
+
 /**
  * API引导式配置
  */

@@ -49,7 +49,7 @@ public class NoticeService {
      * 新会员加入提醒推荐人
      */
     public String getNewCustomerRefNotice(BasCustomer customer, BasCustomer refCustomer) {
-        String first = String.format("新客户【%s】，于%s成为【弘德苑】的第%s位会员，会员号为【%s】", customer.getConName(), customer.getUpdateDt(), customer.getConNo(), customer.getConNo());
+        String first = String.format("新客户【%s】，于%s成为【咪之猫】的第%s位会员，会员号为【%s】", customer.getConName(), customer.getUpdateDt(), customer.getConNo(), customer.getConNo());
         TemplateData temp = TemplateData.New();
         temp.setTouser(refCustomer.getOPENID());
         temp.setTemplate_id(NEW_CUSTOMER_NOTICE_TEMPLATE_01);
