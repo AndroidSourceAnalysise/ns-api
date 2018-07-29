@@ -195,6 +195,7 @@ public class BasCustomerService {
                 if (!updateOpenIdSuccess) {
                     throw new CustException("更新会员信息异常!");
                 }
+                basCustomer.setOPENID(openId);
                 sendFocusMsg(openId, str, basCustomer, refCustomer);
             }
         }
@@ -207,6 +208,7 @@ public class BasCustomerService {
 
     /**
      * 发送关注消息
+     *
      * @param openId
      * @param str
      * @param customer
