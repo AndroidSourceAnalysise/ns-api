@@ -8,16 +8,18 @@
  */
 package com.ns.common.base;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ns.common.exception.CustException;
-import com.jfinal.core.Controller;
-import com.jfinal.log.Log;
-import com.ns.common.utils.Util;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.nio.charset.Charset;
+
+import com.alibaba.fastjson.JSONObject;
+import com.jfinal.core.Controller;
+import com.jfinal.kit.HttpKit;
+import com.jfinal.log.Log;
+import com.ns.common.exception.CustException;
 
 /**
  * description: //TODO <br>
