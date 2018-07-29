@@ -7,11 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="44523981-f3a1-4749-8fd5-c92b83863ce9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/ns/customer/service/BasCustomerService.java" afterPath="$PROJECT_DIR$/src/main/java/com/ns/customer/service/BasCustomerService.java" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/ns/weixin/service/NoticeService.class" afterPath="$PROJECT_DIR$/target/classes/com/ns/weixin/service/NoticeService.class" />
-      <change beforePath="$PROJECT_DIR$/target/ns-api.war" afterPath="$PROJECT_DIR$/target/ns-api.war" />
-      <change beforePath="$PROJECT_DIR$/target/ns-api/WEB-INF/classes/com/ns/weixin/service/NoticeService.class" afterPath="$PROJECT_DIR$/target/ns-api/WEB-INF/classes/com/ns/weixin/service/NoticeService.class" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,11 +42,11 @@
       <file leaf-file-name="BasCustomerService.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/customer/service/BasCustomerService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="570">
-              <caret line="198" column="13" lean-forward="false" selection-start-line="198" selection-start-column="13" selection-end-line="198" selection-end-column="13" />
+            <state relative-caret-position="217">
+              <caret line="190" column="17" lean-forward="true" selection-start-line="190" selection-start-column="17" selection-end-line="190" selection-end-column="17" />
               <folding>
-                <element signature="e#13286#13287#0" expanded="true" />
-                <element signature="e#13325#13326#0" expanded="true" />
+                <element signature="e#13289#13290#0" expanded="true" />
+                <element signature="e#13328#13329#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -653,12 +649,12 @@
       <workItem from="1532004736820" duration="18125000" />
       <workItem from="1532246136402" duration="11841000" />
       <workItem from="1532481383818" duration="15238000" />
-      <workItem from="1532771373196" duration="12154000" />
+      <workItem from="1532771373196" duration="12968000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="57358000" />
+    <option name="totallyTimeSpent" value="58172000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1103,30 +1099,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/weixin/controller/WeixinMsgController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="165" column="12" lean-forward="false" selection-start-line="165" selection-start-column="12" selection-end-line="165" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/customer/service/BasCustomerExtService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="48" column="19" lean-forward="false" selection-start-line="48" selection-start-column="19" selection-end-line="48" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/applet/services/AppletService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="71" column="37" lean-forward="false" selection-start-line="71" selection-start-column="37" selection-end-line="71" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/tld/task/TwitterRebateTask.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -1139,14 +1111,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
           <caret line="38" column="27" lean-forward="false" selection-start-line="38" selection-start-column="27" selection-end-line="38" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/weixin/service/NoticeService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="165" column="16" lean-forward="false" selection-start-line="165" selection-start-column="16" selection-end-line="165" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -1170,13 +1134,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/weixin/service/NoticeService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="165" column="16" lean-forward="false" selection-start-line="165" selection-start-column="16" selection-end-line="165" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/customer/service/BasCustomerExtService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="241">
+          <caret line="48" column="19" lean-forward="false" selection-start-line="48" selection-start-column="19" selection-end-line="48" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/weixin/controller/WeixinMsgController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="344">
+          <caret line="165" column="12" lean-forward="false" selection-start-line="165" selection-start-column="12" selection-end-line="165" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/applet/services/AppletService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="71" column="37" lean-forward="false" selection-start-line="71" selection-start-column="37" selection-end-line="71" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/ns/customer/service/BasCustomerService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="570">
-          <caret line="198" column="13" lean-forward="false" selection-start-line="198" selection-start-column="13" selection-end-line="198" selection-end-column="13" />
+        <state relative-caret-position="217">
+          <caret line="190" column="17" lean-forward="true" selection-start-line="190" selection-start-column="17" selection-end-line="190" selection-end-column="17" />
           <folding>
-            <element signature="e#13286#13287#0" expanded="true" />
-            <element signature="e#13325#13326#0" expanded="true" />
+            <element signature="e#13289#13290#0" expanded="true" />
+            <element signature="e#13328#13329#0" expanded="true" />
           </folding>
         </state>
       </provider>
