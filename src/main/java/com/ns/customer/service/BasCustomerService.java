@@ -175,26 +175,46 @@ public class BasCustomerService {
                 }
                 customer.setUpdateDt(DateUtil.getNow());
                 customer.update();
-                noticeService.sendNewCustomerNotice(customer, refCustomer);
-                CustomServiceApi.sendText(openId, str);
+                sendFocusMsg(openId, str, customer, refCustomer);
             }
         } else {
             ApiResult result = UserApi.getUserInfo(openId);
-            customer = setCustomerAttr(result.getStr("nickname"), result.getStr("headimgurl"), result.getInt("sex"), 0, "", result.getStr("country"), result.getStr("province"),
-                    result.getStr("city"), "", "", result.getStr("unionid"), openId, rpId, rpNo, rpName);
-            if (customer.save() && extService.addBasCustomerExt(customer.getID(), customer.getConNo(), customer.getConName())) {
-                noticeService.sendNewCustomerNotice(customer, refCustomer);
-                CustomServiceApi.sendText(openId, str);
+            String unionid = result.getStr("unionid");
+            BasCustomer basCustomer = getCustomerByUnionId(unionid);
+            if (basCustomer == null) {
+                customer = setCustomerAttr(result.getStr("nickname"), result.getStr("headimgurl"), result.getInt("sex"), 0, "", result.getStr("country"), result.getStr("province"),
+                        result.getStr("city"), "", "", unionid, openId, rpId, rpNo, rpName);
+                if (customer.save() && extService.addBasCustomerExt(customer.getID(), customer.getConNo(), customer.getConName())) {
+                    sendFocusMsg(openId, str, customer, refCustomer);
+                } else {
+                    throw new CustException("新增会员异常!");
+                }
             } else {
-                throw new CustException("新增会员异常!");
+                // 更新openid
+                boolean updateOpenIdSuccess = Db.update("update bas_customer set OPENID=? where UNION_ID=?", openId, unionid) > 0;
+                if (!updateOpenIdSuccess) {
+                    throw new CustException("更新会员信息异常!");
+                }
+                sendFocusMsg(openId, str, customer, refCustomer);
             }
-
         }
 
 
         //setCustomerAttr();
 
         //return customer.save() && extService.addBasCustomerExt(customer.getID(), customer.getConNo(), customer.getConName());
+    }
+
+    /**
+     * 发送关注消息
+     * @param openId
+     * @param str
+     * @param customer
+     * @param refCustomer
+     */
+    private void sendFocusMsg(String openId, String str, BasCustomer customer, BasCustomer refCustomer) {
+        noticeService.sendNewCustomerNotice(customer, refCustomer);
+        CustomServiceApi.sendText(openId, str);
     }
 
 
@@ -243,7 +263,9 @@ public class BasCustomerService {
         customer.setIsSubscribe(0);
         customer.setCreateDt(DateUtil.getNow());
         customer.setUpdateDt(DateUtil.getNow());
-        if (!customer.save()) {
+        boolean saveBaseInfoSuccess = customer.save();
+        boolean saveExtInfoSuccess = extService.addBasCustomerExt(customer.getID(), customer.getConNo(), customer.getConName());
+        if (!saveBaseInfoSuccess || !saveExtInfoSuccess) {
             throw new CustException("添加会员信息失败!");
         }
         return conId;
@@ -431,6 +453,10 @@ public class BasCustomerService {
      */
     public BasCustomer getCustomerByOpenId(String openId) {
         return dao.findFirst("select " + COLUMN + " from bas_customer where openid = ? and enabled = 1", openId);
+    }
+
+    public BasCustomer getCustomerByUnionId(String unionid) {
+        return dao.findFirst("select " + COLUMN + " from bas_customer where UNION_ID = ? and enabled = 1", unionid);
     }
 
     /**
