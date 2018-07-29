@@ -24,9 +24,9 @@ import java.util.Random;
 public class SmsSend {
     public static final String charset = "utf-8";
     // 用户平台API账号(非登录账号,示例:N1234567)
-    public static String account = "CN7465164";
+    public static String account = "CN3546576";
     // 用户平台API密码(非登录密码)
-    public static String pswd = "qingcheng2018@";
+    public static String pswd = "ctg96GnIAS3724";
 
     public static void main(String[] args) throws UnsupportedEncodingException {
 
