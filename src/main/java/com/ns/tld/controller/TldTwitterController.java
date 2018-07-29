@@ -48,12 +48,12 @@ public class TldTwitterController extends BaseController {
         }
         final String conNo = basCustomer.getConNo();
         
-    	//String conNo = getPara("conNo");
-    	int pageNumber = getParaToInt("pageNumber");
-        int pageSize = getParaToInt("pageSize");
-        Integer status = getParaToInt("status");
-        String type = getPara("type");
-        renderJson(JsonResult.newJsonResult(rebateflowService.getTwitterFlowList(conNo, status, type, pageNumber, pageSize)));
+    	Map params = getJsonParam();
+    	int pageNumber = Integer.valueOf((String)params.get("pageNumber"));
+    	int pageSize = Integer.valueOf((String)params.get("pageSize"));
+    	Integer status = Integer.valueOf((String)params.get("status"));
+        String type = (String)params.get("type");
+		 renderJson(JsonResult.newJsonResult(rebateflowService.getTwitterFlowList(conNo, status, type, pageNumber, pageSize)));
     }
    
 

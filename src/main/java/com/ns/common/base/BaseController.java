@@ -65,4 +65,18 @@ public class BaseController extends Controller {
         inputStream.read(jsonBytes, 0, len);
         return jsonBytes;
     }
+
+	/**
+     * 获取application/json型传参.
+     */
+    public Map<String,Object> getJsonParam() {
+    	Map<String,Object> m = new HashMap<String,Object>();
+    	String str = HttpKit.readData(getRequest());
+    	for(String s : str.split("&")){
+    		String k = s.split("=")[0];
+    		String v = s.split("=")[1];
+    		m.put(k, v);
+    	}
+    	return m;
+    }
 }
