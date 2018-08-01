@@ -151,6 +151,7 @@ public class TldTwitterService {
 		if (null != t) {
 			return t;
 		}*/
+		
 		TldTwitter t = this.getByNo(upNo);
 		if (null != t) {
 			return t;
