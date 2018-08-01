@@ -144,14 +144,14 @@ public class TldTwitterService {
 	}
 
 	/**
-	 * 查看自己是不是推客，如果不是就把上级设置为推客并返回.
+	 * 查看上级是不是推客，如果不是就把上级设置为推客并返回.
 	 */
 	public TldTwitter findDirectTwitter(String selfNo, String upNo) {
-		TldTwitter t = this.getByNo(selfNo);
+		/*TldTwitter t = this.getByNo(selfNo);
 		if (null != t) {
 			return t;
-		}
-		t = this.getByNo(upNo);
+		}*/
+		TldTwitter t = this.getByNo(upNo);
 		if (null != t) {
 			return t;
 		}
