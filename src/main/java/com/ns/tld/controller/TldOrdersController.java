@@ -15,7 +15,10 @@ import com.ns.common.Ytapi;
 import com.ns.common.base.BaseController;
 import com.ns.common.constant.RedisKeyDetail;
 import com.ns.common.json.JsonResult;
+import com.ns.common.model.BasCustomerExt;
+import com.ns.common.model.TldOrders;
 import com.ns.common.utils.Util;
+import com.ns.customer.service.BasCustomerExtService;
 import com.ns.tld.domain.YTDO;
 import com.ns.tld.service.TldOrdersService;
 import com.jfinal.aop.Before;
@@ -36,7 +39,7 @@ import java.util.Map;
  */
 public class TldOrdersController extends BaseController {
     static TldOrdersService ordersService = TldOrdersService.me;
-
+    static BasCustomerExtService extService = BasCustomerExtService.me;
     @Before(Tx.class)
     public void newOrder() {
         JSONObject jsonObject = Util.getRequestObject(getRequest(), JSONObject.class);
@@ -66,6 +69,15 @@ public class TldOrdersController extends BaseController {
     public void orderStatusNum() {
         final String conId = (String) Redis.use().hmget(getHeader("sk"), RedisKeyDetail.CON_ID).get(0);
         renderJson(JsonResult.newJsonResult(ordersService.getOrderStatusNum(conId)));
+    }
+    
+    public void rebate() {
+    	String orderId = getPara("orderId");
+    	String conId = getPara("conId");
+    	int status = getParaToInt("status");
+    	BasCustomerExt selfExt = extService.getByConId(conId);
+    	TldOrders orders = ordersService.getOrderById(orderId);
+    	ordersService.rebate(selfExt, orders, status);
     }
 
     @Before(Tx.class)

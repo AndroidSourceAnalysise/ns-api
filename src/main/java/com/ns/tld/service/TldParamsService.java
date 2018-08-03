@@ -12,7 +12,7 @@ import com.ns.common.model.TldTwitter;
 public class TldParamsService {
 	private final TldParams dao = new TldParams();
 	public static final TldParamsService me = new TldParamsService();
-	private final String COLUMN = "id,post_no,post_name,direct_push,con_total,month_sale,percent,year,month,person,person_actual,enable,version,status,remark,memo,create_by,create_dt,update_dt";
+	private final String COLUMN = "id,post_no,post_name,direct_push,con_total,month_sale,percent,year,month,person,person_actual,enabled,version,status,remark,memo,create_by,create_dt,update_dt";
 	private final String defaultNo = "009";//初始会员级别
 	public final String maxNo = "001";//最高级.
 	private final String levelStr = "009,005,004,005,003,002,001"; 

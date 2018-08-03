@@ -81,13 +81,13 @@ public abstract class BaseTldTwitter<M extends BaseTldTwitter<M>> extends Model<
 		return getStr("mobile");
 	}
 
-	public M setEnable(java.lang.Integer enable) {
-		set("enable", enable);
+	public M setEnabled(java.lang.Integer enabled) {
+		set("enabled", enabled);
 		return (M)this;
 	}
 	
-	public java.lang.Integer getEnable() {
-		return getInt("enable");
+	public java.lang.Integer getEnabled() {
+		return getInt("enabled");
 	}
 
 	public M setVersion(java.lang.Integer version) {

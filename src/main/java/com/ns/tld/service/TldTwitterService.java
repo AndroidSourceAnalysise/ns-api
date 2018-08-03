@@ -35,7 +35,7 @@ public class TldTwitterService {
 	static PntProductService pntProductService = PntProductService.me;
 	static TldOrderItemsSerivce tldOrderItemsSerivce = TldOrderItemsSerivce.me;
 	static TldRebateFlowService tldRebateFlowService = TldRebateFlowService.me;
-	private final String COLUMN = "id,post_no,con_id,con_no,con_name,mobile, enable,version, status,remark, memo,min_date, year,month,  day, percent, is_first_month, up_no,up_name,rebate_up_no,rebate_up_name,referee_id,referee_name, month_sale,unconfirm_direct_push,unconfirm_con_total,   confirmed_direct_push, confirmed_con_total,unconfirm_promotion_order,confirmed_promotion_order,  unconfirm_promotion_fee,confirmed_promotion_fee,unconfirm_order,confirmed_order,unconfirm_scale,confirmed_scale,request_amount,requested_total,reserve_available,balance_amount,create_by,create_dt,update_dt";
+	private final String COLUMN = "id,post_no,con_id,con_no,con_name,mobile, enabled,version, status,remark, memo,min_date, year,month,  day, percent, is_first_month, up_no,up_name,rebate_up_no,rebate_up_name,referee_id,referee_name, month_sale,unconfirm_direct_push,unconfirm_con_total,   confirmed_direct_push, confirmed_con_total,unconfirm_promotion_order,confirmed_promotion_order,  unconfirm_promotion_fee,confirmed_promotion_fee,unconfirm_order,confirmed_order,unconfirm_scale,confirmed_scale,request_amount,requested_total,reserve_available,balance_amount,create_by,create_dt,update_dt";
 
 	public TldTwitter getByNo(String conNo) {
 		return dao.findFirst("select " + COLUMN + " from tld_twitter where enabled = 1 and con_no = ?", conNo);
@@ -319,7 +319,7 @@ public class TldTwitterService {
 	}
 
 	public Object getMonthScaleList(int pageNumber, int pageSize) {
-        String sql = " from tld_twitter where enable = 1 and month_sale>0 order by month_sale desc";
+        String sql = " from tld_twitter where enabled = 1 and month_sale>0 order by month_sale desc";
         Page<Record> scaleList = Db.paginate(pageNumber, pageSize, "select " + COLUMN + "", sql);
 		return scaleList;
 	}
