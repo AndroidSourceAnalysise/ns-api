@@ -13,6 +13,7 @@ import com.jfinal.weixin.sdk.api.*;
 import com.jfinal.weixin.sdk.jfinal.ApiController;
 
 import java.util.List;
+import java.util.Map;
 
 public class WeixinApiController extends ApiController {
     static BasCustomerService customerService = BasCustomerService.me;
@@ -59,9 +60,8 @@ public class WeixinApiController extends ApiController {
      */
     public void getFollowers() {
         ApiResult apiResult = UserApi.getFollows();
-        JSONObject jsonObject = apiResult.get("data");
-        jsonObject.getJSONArray("openid");
-        List stringList = jsonObject.getJSONArray("openid");
+        Map jsonObject = apiResult.get("data");
+        List stringList = (List) jsonObject.get("openid");
         for (int i = 0; i < stringList.size(); i++) {
             String openId = "";
 
