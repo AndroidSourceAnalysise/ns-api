@@ -108,7 +108,7 @@ public class BasCustomerService {
      * 自动推荐人
      */
     public boolean autoReferee(String conId) {
-        String sysRefereeNo = SysDictService.me.getByParamKey("auto_referee_no");
+        String sysRefereeNo = SysDictService.me.getByParamKey(RedisKeyDetail.AUTO_REFEREE);
         if (StrKit.isBlank(sysRefereeNo)) {
             sysRefereeNo = "1";
         }

@@ -45,7 +45,6 @@ public class _MappingKit {
 		arp.addMapping("tld_coupon", "ID", TldCoupon.class);
 		arp.addMapping("tld_coupon_grant", "ID", TldCouponGrant.class);
 		arp.addMapping("tld_identify_code", "ID", TldIdentifyCode.class);
-		arp.addMapping("tld_order_award", "id", TldOrderAward.class);
 		arp.addMapping("tld_order_items", "ID", TldOrderItems.class);
 		arp.addMapping("tld_order_split", "ID", TldOrderSplit.class);
 		arp.addMapping("tld_orders", "ID", TldOrders.class);
@@ -56,8 +55,7 @@ public class _MappingKit {
 		arp.addMapping("tld_rebate_flow", "id", TldRebateFlow.class);
 		arp.addMapping("tld_site_msg", "ID", TldSiteMsg.class);
 		arp.addMapping("tld_twitter", "id", TldTwitter.class);
-		arp.addMapping("tld_withdraw", "id", TldWithdraw.class);
-		arp.addMapping("tld_withdraw_item", "id", TldWithdrawItem.class);
+		arp.addMapping("tld_wechat_withdraw", "id", TldWechatWithdraw.class);
 		arp.addMapping("treenodes", "id", Treenodes.class);
 	}
 }

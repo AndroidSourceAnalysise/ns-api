@@ -54,15 +54,6 @@ public abstract class BaseTldTwitter<M extends BaseTldTwitter<M>> extends Model<
 		return getStr("con_no");
 	}
 
-	public M setRealName(java.lang.String realName) {
-		set("real_name", realName);
-		return (M)this;
-	}
-	
-	public java.lang.String getRealName() {
-		return getStr("real_name");
-	}
-
 	public M setConName(java.lang.String conName) {
 		set("con_name", conName);
 		return (M)this;
@@ -351,15 +342,6 @@ public abstract class BaseTldTwitter<M extends BaseTldTwitter<M>> extends Model<
 		return get("confirmed_scale");
 	}
 
-	public M setBalanceAmount(java.math.BigDecimal balanceAmount) {
-		set("balance_amount", balanceAmount);
-		return (M)this;
-	}
-	
-	public java.math.BigDecimal getBalanceAmount() {
-		return get("balance_amount");
-	}
-
 	public M setRequestAmount(java.math.BigDecimal requestAmount) {
 		set("request_amount", requestAmount);
 		return (M)this;
@@ -385,6 +367,15 @@ public abstract class BaseTldTwitter<M extends BaseTldTwitter<M>> extends Model<
 	
 	public java.math.BigDecimal getReserveAvailable() {
 		return get("reserve_available");
+	}
+
+	public M setBalanceAmount(java.math.BigDecimal balanceAmount) {
+		set("balance_amount", balanceAmount);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getBalanceAmount() {
+		return get("balance_amount");
 	}
 
 	public M setCreateBy(java.lang.String createBy) {

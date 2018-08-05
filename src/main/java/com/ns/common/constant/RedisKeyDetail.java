@@ -73,11 +73,23 @@ public interface RedisKeyDetail {
      */
     String VALID_TIME = "valid_time";
 
-    String SESSION = "SESSION";
-
+    /**
+     * 会话key
+     */
     String SESSION_KEY = "session_key";
 
+    /**
+     * 会员id
+     */
     String CON_ID = "con_id";
 
+    /**
+     * 随机立减
+     */
     String RANDOM_DECREASE = "random_decrease";
+
+    /**
+     * 系统推荐人
+     */
+    String AUTO_REFEREE = "auto_referee_no";
 }

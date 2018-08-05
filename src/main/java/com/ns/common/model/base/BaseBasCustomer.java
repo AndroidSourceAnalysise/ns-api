@@ -234,6 +234,15 @@ public abstract class BaseBasCustomer<M extends BaseBasCustomer<M>> extends Mode
 		return getStr("REMARK");
 	}
 
+	public M setAppletOpenid(java.lang.String appletOpenid) {
+		set("APPLET_OPENID", appletOpenid);
+		return (M)this;
+	}
+	
+	public java.lang.String getAppletOpenid() {
+		return getStr("APPLET_OPENID");
+	}
+
 	public M setCreateBy(java.lang.String createBy) {
 		set("CREATE_BY", createBy);
 		return (M)this;
@@ -259,15 +268,6 @@ public abstract class BaseBasCustomer<M extends BaseBasCustomer<M>> extends Mode
 	
 	public java.lang.String getUpdateDt() {
 		return getStr("UPDATE_DT");
-	}
-
-	public M setAppletOpenid(java.lang.String appletOpenid) {
-		set("APPLET_OPENID", appletOpenid);
-		return (M)this;
-	}
-	
-	public java.lang.String getAppletOpenid() {
-		return getStr("APPLET_OPENID");
 	}
 
 }

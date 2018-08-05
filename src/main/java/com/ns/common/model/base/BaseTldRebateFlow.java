@@ -90,24 +90,6 @@ public abstract class BaseTldRebateFlow<M extends BaseTldRebateFlow<M>> extends 
 		return getStr("direct_rebate_name");
 	}
 
-	public M setScale(java.math.BigDecimal scale) {
-		set("scale", scale);
-		return (M)this;
-	}
-	
-	public java.math.BigDecimal getScale() {
-		return get("scale");
-	}
-
-	public M setFee(java.math.BigDecimal fee) {
-		set("fee", fee);
-		return (M)this;
-	}
-	
-	public java.math.BigDecimal getFee() {
-		return get("fee");
-	}
-
 	public M setType(java.lang.Integer type) {
 		set("type", type);
 		return (M)this;
@@ -142,6 +124,24 @@ public abstract class BaseTldRebateFlow<M extends BaseTldRebateFlow<M>> extends 
 	
 	public java.lang.String getOperateDt() {
 		return getStr("operate_dt");
+	}
+
+	public M setScale(java.math.BigDecimal scale) {
+		set("scale", scale);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getScale() {
+		return get("scale");
+	}
+
+	public M setFee(java.math.BigDecimal fee) {
+		set("fee", fee);
+		return (M)this;
+	}
+	
+	public java.math.BigDecimal getFee() {
+		return get("fee");
 	}
 
 }

@@ -90,6 +90,15 @@ public abstract class BaseTldIdentifyCode<M extends BaseTldIdentifyCode<M>> exte
 		return getStr("MEMO");
 	}
 
+	public M setTYPE(java.lang.Integer TYPE) {
+		set("TYPE", TYPE);
+		return (M)this;
+	}
+	
+	public java.lang.Integer getTYPE() {
+		return getInt("TYPE");
+	}
+
 	public M setCreateBy(java.lang.String createBy) {
 		set("CREATE_BY", createBy);
 		return (M)this;
@@ -115,15 +124,6 @@ public abstract class BaseTldIdentifyCode<M extends BaseTldIdentifyCode<M>> exte
 	
 	public java.lang.String getUpdateDt() {
 		return getStr("UPDATE_DT");
-	}
-
-	public M setTYPE(java.lang.Integer TYPE) {
-		set("TYPE", TYPE);
-		return (M)this;
-	}
-	
-	public java.lang.Integer getTYPE() {
-		return getInt("TYPE");
 	}
 
 }
