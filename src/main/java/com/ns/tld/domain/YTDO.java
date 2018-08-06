@@ -1,6 +1,8 @@
 package com.ns.tld.domain;
 
-public class YTDO {
+import java.util.Comparator;
+
+public class YTDO  {
 
 
     /**
@@ -36,4 +38,7 @@ public class YTDO {
     public void setProcessInfo(String ProcessInfo) {
         this.ProcessInfo = ProcessInfo;
     }
+
+
+
 }

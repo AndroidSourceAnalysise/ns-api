@@ -25,9 +25,7 @@ import com.jfinal.aop.Before;
 import com.jfinal.kit.HttpKit;
 import com.jfinal.plugin.activerecord.tx.Tx;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * description: //TODO <br>
@@ -123,6 +121,18 @@ public class TldOrdersController extends BaseController {
         Map params = getRequestObject(getRequest(), HashMap.class);
         String json = Ytapi.ytPost((String) params.get("billNo"));
         List<YTDO> ytdoList = JSON.parseArray(json, YTDO.class);
+        Collections.sort(ytdoList, new Comparator<YTDO>() {
+            @Override
+            public int compare(YTDO o1, YTDO o2) {
+                final int rs = o1.getUpload_Time().compareToIgnoreCase(o2.getUpload_Time());
+                if (rs > 0) {
+                    return -1;
+                } else if (rs < 0) {
+                    return 1;
+                }
+                return 0;
+            }
+        });
         renderJson(JsonResult.newJsonResult(ytdoList));
     }
 
