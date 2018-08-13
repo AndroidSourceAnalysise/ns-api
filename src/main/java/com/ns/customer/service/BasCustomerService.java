@@ -512,12 +512,13 @@ public class BasCustomerService {
 
     /*
      * 递归上级找到最近的上级.
+     * @deprected
      *
      ***/
     public String findUpTwitterNo(String rpNo) {
         BasCustomer c = this.getCustomerByConNo(rpNo);
         while (null != c && !"sys".equals(c.getRpNo())) {
-            if (c.getConType() == 1) {
+            if (c.getConType() == 1) { conType:改为付费会员标记.
                 return c.getConNo();
             }
             String rp = c.getRpNo();

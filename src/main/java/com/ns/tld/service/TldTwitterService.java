@@ -35,6 +35,7 @@ public class TldTwitterService {
 	static PntProductService pntProductService = PntProductService.me;
 	static TldOrderItemsSerivce tldOrderItemsSerivce = TldOrderItemsSerivce.me;
 	static TldRebateFlowService tldRebateFlowService = TldRebateFlowService.me;
+	static final int STATUS_NORMAL = 1;
 	private final String COLUMN = "id,post_no,con_id,con_no,con_name,mobile, enabled,version, status,remark, memo,min_date, year,month,  day, percent, is_first_month, up_no,up_name,rebate_up_no,rebate_up_name,referee_id,referee_name, month_sale,unconfirm_direct_push,unconfirm_con_total,   confirmed_direct_push, confirmed_con_total,unconfirm_promotion_order,confirmed_promotion_order,  unconfirm_promotion_fee,confirmed_promotion_fee,unconfirm_order,confirmed_order,unconfirm_scale,confirmed_scale,request_amount,requested_total,reserve_available,balance_amount,create_by,create_dt,update_dt";
 
 	public TldTwitter getByNo(String conNo) {
@@ -75,6 +76,7 @@ public class TldTwitterService {
 		t.setRebateUpName(rebateUpName);
 		t.setUpName(upName);
 		t.setUpNo(upNo);
+		t.setStatus(STATUS_NORMAL);
 		t.save();
 		return t;
 	}
@@ -136,11 +138,11 @@ public class TldTwitterService {
 		TldTwitter up = this.getByNo(rpNo);
 		if (null != up)
 			return up;
-		String upTwitterNo = basCustomerService.findUpTwitterNo(rpNo);
-		if (StrKit.isBlank(upTwitterNo)) {
+		BasCustomer bc = basCustomerService.getCustomerByConNo(rpNo);
+		if (bc == null || StrKit.isBlank(bc.getRpNo())) {
 			return null;
 		}
-		return this.getByNo(upTwitterNo);
+		return this.getUpTwitter(bc.getRpNo());
 	}
 
 	/**

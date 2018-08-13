@@ -11,7 +11,7 @@ public class TldPntParamsSerivce {
     public TldPntParams getByPId(String pId){
     	return dao.findFirst("select " + COLUMN + " from tld_pnt_params where product_id =?", pId);
     }
-	public List<TldPntParams> queryByPntIds(List<String> prodcutIds) {
+    public List<TldPntParams> queryByPntIds(List<String> prodcutIds) {
 		StringBuffer sb =  new StringBuffer("select " + COLUMN + " from tld_pnt_params where product_id in(");
 		for(String str : prodcutIds){
 			sb.append("'" + str + "',");
