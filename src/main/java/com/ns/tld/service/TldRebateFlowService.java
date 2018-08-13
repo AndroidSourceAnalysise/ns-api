@@ -41,8 +41,11 @@ public class TldRebateFlowService {
         flow.setTwitterId(t.getConId());
         flow.setTwitterNo(t.getConNo());
         flow.setTwitterName(t.getConName());
-        flow.setDirectRebateNo(downT.getConNo());
-        flow.setDirectRebateName(downT.getConName());
+        flow.setOrderNo(orders.getOrderNo());
+        if(downT != null){
+        	flow.setDirectRebateNo(downT.getConNo());
+        	flow.setDirectRebateName(downT.getConName());
+        }
         flow.setStatus(STATUS_WAITING);
         flow.setCreateDt(DateUtil.getNow());
         flow.setType(type);

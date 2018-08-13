@@ -76,6 +76,7 @@ public class TldOrdersController extends BaseController {
     	BasCustomerExt selfExt = extService.getByConId(conId);
     	TldOrders orders = ordersService.getOrderById(orderId);
     	ordersService.rebate(selfExt, orders, status);
+    	renderJson(JsonResult.newJsonResult("success"));
     }
 
     @Before(Tx.class)
