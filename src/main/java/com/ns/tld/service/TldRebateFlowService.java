@@ -57,11 +57,11 @@ public class TldRebateFlowService {
     }
 
     public void confirmRebate(String orderNo, String tId) {
-        Db.update("update tld_rebate_flow set status = " + STATUS_FINISH + ",operate_dt = now() where orderNo=? and twitter_id=?", orderNo, tId);
+        Db.update("update tld_rebate_flow set status = " + STATUS_FINISH + ",operate_dt = now() where order_no=? and twitter_id=?", orderNo, tId);
     }
 
     public void disableRebate(String orderNo, String tId) {
-        Db.update("update tld_rebate_flow set status = " + STATUS_DISABLE + ",operate_dt = now() where orderNo=? and twitter_id=?", orderNo, tId);
+        Db.update("update tld_rebate_flow set status = " + STATUS_DISABLE + ",operate_dt = now() where order_no=? and twitter_id=?", orderNo, tId);
     }
 
     public Object getTwitterFlowList(String conNo, Integer status, String type, int pageNumber, int pageSize) {
